@@ -15,10 +15,10 @@ const ProductCard: React.FC<IProps> = (props) => {
   const priceFormat = new Intl.NumberFormat('en-US').format(price);
 
   return (
-    <div className="product-card-container">
+    <div className="">
       <img src={imageUrl} alt={`${name}`} width="300px" height="300px" />
-      <div className="footer">
-        <p className="name">{name}</p>
+      <div className="">
+        <p className="">{name}</p>
         <label>
           Harga: <span className="price">{priceFormat}</span>
         </label>

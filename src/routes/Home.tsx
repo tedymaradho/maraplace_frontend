@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
-import axios from 'axios';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -8,8 +7,9 @@ const Home = () => {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const res = await axios('api/products');
-        setProducts(res.data.data.products);
+        fetch('http://127.0.0.1:3001/api/products')
+          .then((response) => response.json())
+          .then((res) => setProducts(res.data.products));
       } catch (err) {
         console.error(err);
       }
@@ -20,7 +20,8 @@ const Home = () => {
   return (
     <div>
       {products.map((product) => {
-        return <ProductCard product={product} />;
+        const { idproduct } = product;
+        return <ProductCard key={idproduct} product={product} />;
       })}
     </div>
   );
