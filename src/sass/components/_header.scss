@@ -1,0 +1,34 @@
+.header {
+  &__banner {
+    width: 100%;
+    height: 30rem;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 2rem;
+    border-radius: 10px;
+
+    &--img {
+      width: 100%;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  &__category {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6rem;
+    margin-bottom: 2rem;
+
+    &--label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  }
+}

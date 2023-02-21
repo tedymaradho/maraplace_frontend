@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import ProductCard from '../components/ProductCard';
+import Header from '../components/Header';
+import ProductCart from '../components/ProductCart';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -18,11 +19,16 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
-      {products.map((product) => {
-        const { idproduct } = product;
-        return <ProductCard key={idproduct} product={product} />;
-      })}
+    <div className="home">
+      <div className="home__header">
+        <Header />
+      </div>
+      <div className="home__product-cart">
+        {products.map((product) => {
+          const { idproduct } = product;
+          return <ProductCart key={idproduct} product={product} />;
+        })}
+      </div>
     </div>
   );
 };

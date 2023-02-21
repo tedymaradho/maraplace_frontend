@@ -7,11 +7,9 @@
 @import './base/utilities';
 
 @import './components/buttons';
-@import './components/icons';
-
-@import './layout/footer';
-@import './layout/grid';
-@import './layout/header';
-@import './layout/navbar';
+@import './components/footer';
+@import './components/header';
+@import './components/navbar';
+@import './components/product-card';
 
 @import './pages/home';

@@ -5,3 +5,38 @@
 .border--no {
   border: none !important;
 }
+
+.icon {
+  &__cart {
+    font-size: 2rem;
+    color: #555;
+    cursor: pointer;
+
+    &:hover {
+      color: #000;
+    }
+  }
+
+  &__search {
+    font-size: 2rem;
+    color: rgba(0, 0, 0, 0.5);
+  }
+
+  &__hat,
+  &__jacket,
+  &__shoes,
+  &__slippers,
+  &__dress,
+  &__shirt,
+  &__shorts,
+  &__pants,
+  &__bag {
+    font-size: 5rem;
+    color: $color-primary;
+  }
+
+  &__all {
+    font-size: 5rem;
+    color: #555;
+  }
+}

@@ -1,0 +1,13 @@
+.home {
+  padding: 8rem 3rem 3rem 3rem;
+
+  &__header {
+  }
+
+  &__product-cart {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+}

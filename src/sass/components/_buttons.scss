@@ -1,0 +1,19 @@
+.btn {
+  cursor: pointer;
+  border-radius: 5px;
+
+  &--sm {
+    padding: 5px 10px;
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+  &--invert {
+    border: 1px solid lightgray;
+    background-color: white;
+
+    &:hover {
+      background-color: black;
+      color: white;
+    }
+  }
+}
