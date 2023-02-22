@@ -6,10 +6,11 @@
 @import './base/typography';
 @import './base/utilities';
 
+@import './components/announcement';
 @import './components/buttons';
 @import './components/footer';
 @import './components/header';
 @import './components/navbar';
-@import './components/product-card';
+@import './components/product-grid';
 
 @import './pages/home';

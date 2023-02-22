@@ -3,6 +3,8 @@ import { BiSearchAlt } from 'react-icons/bi';
 import { FaShoppingCart } from 'react-icons/fa';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
+import Announcement from './Announcement';
+import Footer from './Footer';
 
 const animatedComponents = makeAnimated();
 
@@ -20,12 +22,13 @@ const Navbar = () => {
   ];
 
   return (
-    <>
+    <div className="navbar__container">
+      <Announcement />
       <div className="navbar">
         <div className="navbar__logo--box">
           <img
             className="navbar__logo--img"
-            src="./src/assets/logo.png"
+            src="https://firebasestorage.googleapis.com/v0/b/maradho-8c79e.appspot.com/o/marashop%2FLOGO%20MARADHO.png?alt=media&token=fd6e0581-d52b-45ba-93c6-b1747650be10"
             alt="logo"
           />
           <h1 className="navbar__logo--name">MaraShop</h1>
@@ -60,7 +63,8 @@ const Navbar = () => {
         </div>
       </div>
       <Outlet />
-    </>
+      <Footer />
+    </div>
   );
 };
 

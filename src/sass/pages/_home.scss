@@ -1,13 +1,29 @@
 .home {
-  padding: 8rem 3rem 3rem 3rem;
+  padding: 11rem 3rem 3rem 3rem;
 
   &__header {
   }
 
-  &__product-cart {
+  &__product {
+    overflow: hidden;
+  }
+
+  &__product--title {
+    font-size: 2rem;
+    font-weight: 600;
+    border-bottom: 1px solid rgba($color-primary, 0.3);
+    color: $color-text;
+    padding: 2rem 1rem 1rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  &__product--box {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+    justify-content: flex-start;
     gap: 2rem;
+    width: max-content;
+  }
+
+  &__footer {
   }
 }

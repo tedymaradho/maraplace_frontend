@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Header from '../components/Header';
-import ProductCart from '../components/ProductCart';
+import ProductGrid from '../components/ProductGrid';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -8,7 +8,7 @@ const Home = () => {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        fetch('http://127.0.0.1:3001/api/products')
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/products`)
           .then((response) => response.json())
           .then((res) => setProducts(res.data.products));
       } catch (err) {
@@ -23,11 +23,35 @@ const Home = () => {
       <div className="home__header">
         <Header />
       </div>
-      <div className="home__product-cart">
-        {products.map((product) => {
-          const { idproduct } = product;
-          return <ProductCart key={idproduct} product={product} />;
-        })}
+      <div className="home__product">
+        <h1 className="home__product--title">Get Special Discount</h1>
+        <div className="home__product--box">
+          {products.map((product) => {
+            const { idproduct } = product;
+            return <ProductGrid key={idproduct} product={product} />;
+          })}
+        </div>
+        <h1 className="home__product--title">New Arrivals</h1>
+        <div className="home__product--box">
+          {products.map((product) => {
+            const { idproduct } = product;
+            return <ProductGrid key={idproduct} product={product} />;
+          })}
+        </div>
+        <h1 className="home__product--title">The Most Sold</h1>
+        <div className="home__product--box">
+          {products.map((product) => {
+            const { idproduct } = product;
+            return <ProductGrid key={idproduct} product={product} />;
+          })}
+        </div>
+        <h1 className="home__product--title">Recommendation For You</h1>
+        <div className="home__product--box">
+          {products.map((product) => {
+            const { idproduct } = product;
+            return <ProductGrid key={idproduct} product={product} />;
+          })}
+        </div>
       </div>
     </div>
   );

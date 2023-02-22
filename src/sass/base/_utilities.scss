@@ -38,5 +38,26 @@
   &__all {
     font-size: 5rem;
     color: #555;
+    cursor: pointer;
+  }
+
+  &__fb {
+    font-size: 2.5rem;
+    margin-right: 1rem;
+    cursor: pointer;
+  }
+  &__tw {
+    font-size: 2.85rem;
+    margin-right: 0.6rem;
+    cursor: pointer;
+  }
+  &__ig {
+    font-size: 3rem;
+    margin-right: 0.6rem;
+    cursor: pointer;
+  }
+  &__yt {
+    font-size: 3.35rem;
+    cursor: pointer;
   }
 }

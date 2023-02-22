@@ -1,0 +1,32 @@
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background: linear-gradient(to top left, $color-text, $color-primary);
+  color: #fff;
+  gap: 5rem;
+  padding: 3rem;
+
+  &__list {
+    font-size: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    list-style: none;
+
+    &--title {
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    &--item {
+      font-weight: 300;
+    }
+  }
+
+  &__icons {
+    display: flex;
+    align-items: center;
+  }
+}
