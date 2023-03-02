@@ -28,7 +28,7 @@ const Navbar = () => {
         <div className="navbar__logo--box">
           <img
             className="navbar__logo--img"
-            src="https://firebasestorage.googleapis.com/v0/b/maradho-8c79e.appspot.com/o/marashop%2FLOGO%20MARADHO.png?alt=media&token=fd6e0581-d52b-45ba-93c6-b1747650be10"
+            src="https://firebasestorage.googleapis.com/v0/b/maradho-8c79e.appspot.com/o/logo%2FLOGO%20MARADHO.webp?alt=media&token=1e4f07ad-c9c8-4ac3-99f1-13bc6320947e"
             alt="logo"
           />
           <h1 className="navbar__logo--name">MaraShop</h1>

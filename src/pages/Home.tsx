@@ -3,19 +3,35 @@ import Header from '../components/Header';
 import ProductGrid from '../components/ProductGrid';
 
 const Home = () => {
-  const [products, setProducts] = useState([]);
+  const [productsNew, setProductsNew] = useState([]);
+  const [productsMostSold, setProductsMostSold] = useState([]);
+  const [productsDisc, setProductsDisc] = useState([]);
+  const [productsRecom, setProductsRecom] = useState([]);
 
   useEffect(() => {
-    const getProducts = async () => {
-      try {
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/products`)
-          .then((response) => response.json())
-          .then((res) => setProducts(res.data.products));
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    getProducts();
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/products?Disc[gt]=0&limit=6`)
+      .then((response) => response.json())
+      .then((res) => setProductsDisc(res.data.products))
+      .catch((err) => console.error(err.message));
+
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/products?Flag=new&limit=6`)
+      .then((response) => response.json())
+      .then((res) => setProductsNew(res.data.products))
+      .catch((err) => console.error(err.message));
+
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/products?sort=-Sold&limit=6`)
+      .then((response) => response.json())
+      .then((res) => setProductsMostSold(res.data.products))
+      .catch((err) => console.error(err.message));
+
+    fetch(
+      `${
+        import.meta.env.VITE_BACKEND_URL
+      }/api/products?Flag=recommended&limit=6`
+    )
+      .then((response) => response.json())
+      .then((res) => setProductsRecom(res.data.products))
+      .catch((err) => console.error(err.message));
   }, []);
 
   return (
@@ -24,33 +40,52 @@ const Home = () => {
         <Header />
       </div>
       <div className="home__product">
-        <h1 className="home__product--title">Get Special Discount</h1>
-        <div className="home__product--box">
-          {products.map((product) => {
-            const { idproduct } = product;
-            return <ProductGrid key={idproduct} product={product} />;
-          })}
+        {productsDisc.length > 0 && (
+          <h1 className="home__product--title">Special Discount</h1>
+        )}
+        <div className="home__product--scroll">
+          <div className="home__product--box">
+            {productsDisc.map((product) => {
+              const { IdProduct } = product;
+              return <ProductGrid key={IdProduct} product={product} />;
+            })}
+          </div>
         </div>
-        <h1 className="home__product--title">New Arrivals</h1>
-        <div className="home__product--box">
-          {products.map((product) => {
-            const { idproduct } = product;
-            return <ProductGrid key={idproduct} product={product} />;
-          })}
+
+        {productsNew.length > 0 && (
+          <h1 className="home__product--title">New Arrivals</h1>
+        )}
+        <div className="home__product--scroll">
+          <div className="home__product--box">
+            {productsNew.map((product) => {
+              const { IdProduct } = product;
+              return <ProductGrid key={IdProduct} product={product} />;
+            })}
+          </div>
         </div>
-        <h1 className="home__product--title">The Most Sold</h1>
-        <div className="home__product--box">
-          {products.map((product) => {
-            const { idproduct } = product;
-            return <ProductGrid key={idproduct} product={product} />;
-          })}
+
+        {productsMostSold.length > 0 && (
+          <h1 className="home__product--title">The Most Sold</h1>
+        )}
+        <div className="home__product--scroll">
+          <div className="home__product--box">
+            {productsMostSold.map((product) => {
+              const { IdProduct } = product;
+              return <ProductGrid key={IdProduct} product={product} />;
+            })}
+          </div>
         </div>
-        <h1 className="home__product--title">Recommendation For You</h1>
-        <div className="home__product--box">
-          {products.map((product) => {
-            const { idproduct } = product;
-            return <ProductGrid key={idproduct} product={product} />;
-          })}
+
+        {productsRecom.length > 0 && (
+          <h1 className="home__product--title">Recommendation For You</h1>
+        )}
+        <div className="home__product--scroll">
+          <div className="home__product--box">
+            {productsRecom.map((product) => {
+              const { IdProduct } = product;
+              return <ProductGrid key={IdProduct} product={product} />;
+            })}
+          </div>
         </div>
       </div>
     </div>

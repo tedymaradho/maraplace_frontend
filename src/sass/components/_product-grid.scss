@@ -1,13 +1,14 @@
 .product-grid {
-  width: 27rem;
-  height: 38.8rem;
+  width: 20rem;
+  height: 35rem;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 1px 0 10px 0 rgba(0, 0, 0, 0.1);
 
   &__img {
-    width: 27rem;
-    height: 27rem;
+    width: 20rem;
+    height: 20rem;
+    object-fit: cover;
   }
 
   &__item--box {
@@ -17,7 +18,7 @@
   &__title {
     font-size: 1.7rem;
     font-weight: 400;
-    margin-bottom: 0.5rem;
+    margin: 1rem 0;
   }
 
   &__price {

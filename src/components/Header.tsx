@@ -8,16 +8,61 @@ import {
 } from 'react-icons/gi';
 import { FaRedhat, FaTshirt } from 'react-icons/fa';
 import { BsFillHandbagFill } from 'react-icons/bs';
+import { AiFillRightCircle, AiFillLeftCircle } from 'react-icons/ai';
 import { BiGridSmall } from 'react-icons/bi';
+import { useEffect, useState } from 'react';
 
 const Header = () => {
+  const [bannersImage, setBannersImage] = useState([]);
+  const [marginLeft, setMarginLeft] = useState(0);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/settings?IdSetting=banner`)
+      .then((response) => response.json())
+      .then((res) => setBannersImage(res.data.setting[0].Set1))
+      .catch((err) => console.error(err.message));
+  }, []);
+
+  const prevImageHandler = () => {
+    if (marginLeft === 0) {
+      setMarginLeft((bannersImage.length - 1) * -100);
+    } else {
+      setMarginLeft(marginLeft + 100);
+    }
+  };
+
+  const nextImageHandler = () => {
+    if (marginLeft === (bannersImage.length - 1) * -100) {
+      setMarginLeft(0);
+    } else {
+      setMarginLeft(marginLeft - 100);
+    }
+  };
+
+  setTimeout(nextImageHandler, 4000);
+
   return (
     <div className="header">
       <div className="header__banner">
-        <img
-          className="header__banner--img"
-          src="https://firebasestorage.googleapis.com/v0/b/maradho-8c79e.appspot.com/o/marashop%2Fbanner.webp?alt=media&token=81131a1f-3852-43a7-b30c-3c0867207c31"
-          alt="image of banner"
+        <AiFillLeftCircle
+          onClick={prevImageHandler}
+          className="header__banner--btn-left"
+        />
+        {bannersImage.map((banner, index) => {
+          return (
+            <div className="header__banner--box" key={index}>
+              <img
+                className="header__banner--img"
+                style={{ marginLeft: marginLeft + '%' }}
+                src={banner}
+                alt="image of banner"
+              />
+            </div>
+          );
+        })}
+        <AiFillRightCircle
+          onClick={nextImageHandler}
+          className="header__banner--btn-right"
         />
       </div>
 

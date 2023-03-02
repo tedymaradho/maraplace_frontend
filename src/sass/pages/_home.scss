@@ -5,7 +5,10 @@
   }
 
   &__product {
-    overflow: hidden;
+  }
+
+  &__product--scroll {
+    overflow-x: auto;
   }
 
   &__product--title {
@@ -20,8 +23,8 @@
   &__product--box {
     display: flex;
     justify-content: flex-start;
-    gap: 2rem;
     width: max-content;
+    gap: 2rem;
   }
 
   &__footer {
