@@ -9,17 +9,21 @@ const Home = () => {
   const [productsRecom, setProductsRecom] = useState([]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/products?Disc[gt]=0&limit=6`)
+    fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/api/products?Disc[gt]=0&limit=10`
+    )
       .then((response) => response.json())
       .then((res) => setProductsDisc(res.data.products))
       .catch((err) => console.error(err.message));
 
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/products?Flag=new&limit=6`)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/products?Flag=new&limit=10`)
       .then((response) => response.json())
       .then((res) => setProductsNew(res.data.products))
       .catch((err) => console.error(err.message));
 
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/products?sort=-Sold&limit=6`)
+    fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/api/products?sort=-Sold&limit=10`
+    )
       .then((response) => response.json())
       .then((res) => setProductsMostSold(res.data.products))
       .catch((err) => console.error(err.message));
@@ -27,7 +31,7 @@ const Home = () => {
     fetch(
       `${
         import.meta.env.VITE_BACKEND_URL
-      }/api/products?Flag=recommended&limit=6`
+      }/api/products?Flag=recommended&limit=10`
     )
       .then((response) => response.json())
       .then((res) => setProductsRecom(res.data.products))

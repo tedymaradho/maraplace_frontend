@@ -1,7 +1,7 @@
 .header {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 3rem;
 
   &__banner {
     height: 30rem;
@@ -14,7 +14,6 @@
       width: 100vw;
       height: 30rem;
       display: flex;
-      margin-bottom: 2rem;
     }
 
     &--img {
@@ -61,7 +60,6 @@
     align-items: center;
     justify-content: center;
     gap: 6rem;
-    margin-bottom: 2rem;
 
     &--label {
       display: flex;

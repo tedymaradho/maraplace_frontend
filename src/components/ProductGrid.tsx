@@ -5,12 +5,13 @@ interface IProps {
     ImageUrl: string[];
     Name: string;
     Price: number;
-    Merk: string;
+    Disc: number;
+    PriceAfterDisc: number;
   };
 }
 
 const ProductGrid: React.FC<IProps> = (props) => {
-  const { ImageUrl, Name, Price } = props.product;
+  const { ImageUrl, Name, Price, Disc, PriceAfterDisc } = props.product;
   const priceFormat = new Intl.NumberFormat('en-US').format(Price);
 
   return (
@@ -25,7 +26,15 @@ const ProductGrid: React.FC<IProps> = (props) => {
 
       <div className="product-grid__item--box">
         <p className="product-grid__title">{Name}</p>
-        <p className="product-grid__price">Rp. {priceFormat}</p>
+        {Disc > 0 ? (
+          <div>
+            <p className="product-grid__price-before">Rp. {priceFormat}</p>
+            <p className="product-grid__disc">{Disc}%</p>
+            <p className="product-grid__price-disc">{PriceAfterDisc}</p>
+          </div>
+        ) : (
+          <p className="product-grid__price">Rp. {priceFormat}</p>
+        )}
         <button className="btn btn--invert btn--sm">Add to cart</button>
       </div>
     </div>

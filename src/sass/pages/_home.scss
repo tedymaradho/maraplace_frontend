@@ -14,17 +14,22 @@
   &__product--title {
     font-size: 2rem;
     font-weight: 600;
-    border-bottom: 1px solid rgba($color-primary, 0.3);
     color: $color-text;
     padding: 2rem 1rem 1rem 1rem;
-    margin-bottom: 1rem;
+    margin-top: 2rem;
   }
 
   &__product--box {
     display: flex;
     justify-content: flex-start;
     width: max-content;
-    gap: 2rem;
+    padding: 0 0.5rem;
+    border-radius: 10px;
+    background: linear-gradient(
+      to right bottom,
+      $color-primary-light,
+      $color-bg
+    );
   }
 
   &__footer {
