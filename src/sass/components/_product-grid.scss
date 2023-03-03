@@ -1,6 +1,6 @@
 .product-grid {
   width: 20rem;
-  height: 35rem;
+  height: 35.5rem;
   border-radius: 10px;
   overflow: hidden;
   background-color: white;
@@ -20,11 +20,34 @@
     font-size: 1.7rem;
     font-weight: 400;
     margin: 1rem 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 
-  &__price {
+  &__price,
+  &__price-disc {
     font-size: 1.8rem;
     font-weight: 700;
     margin-bottom: 1rem;
+  }
+
+  &__disc--box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  &__price-before {
+    font-size: 1.4rem;
+    text-decoration: line-through;
+  }
+
+  &__disc {
+    font-size: 1.4rem;
+    color: red;
   }
 }

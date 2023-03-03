@@ -13,6 +13,7 @@ interface IProps {
 const ProductGrid: React.FC<IProps> = (props) => {
   const { ImageUrl, Name, Price, Disc, PriceAfterDisc } = props.product;
   const priceFormat = new Intl.NumberFormat('en-US').format(Price);
+  const priceDiscFormat = new Intl.NumberFormat('en-US').format(PriceAfterDisc);
 
   return (
     <div className="product-grid">
@@ -28,9 +29,11 @@ const ProductGrid: React.FC<IProps> = (props) => {
         <p className="product-grid__title">{Name}</p>
         {Disc > 0 ? (
           <div>
-            <p className="product-grid__price-before">Rp. {priceFormat}</p>
-            <p className="product-grid__disc">{Disc}%</p>
-            <p className="product-grid__price-disc">{PriceAfterDisc}</p>
+            <div className="product-grid__disc--box">
+              <p className="product-grid__price-before">Rp. {priceFormat}</p>
+              <p className="product-grid__disc">{Disc}%</p>
+            </div>
+            <p className="product-grid__price-disc">Rp. {priceDiscFormat}</p>
           </div>
         ) : (
           <p className="product-grid__price">Rp. {priceFormat}</p>

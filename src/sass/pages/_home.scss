@@ -4,7 +4,24 @@
   &__header {
   }
 
-  &__product {
+  &__see--all {
+    font-size: 1.7rem;
+    color: $color-text;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__btn--see-all {
+    font-size: 3rem;
+    color: $color-primary;
+
+    &:hover {
+      color: $color-text;
+    }
   }
 
   &__product--scroll {
@@ -17,10 +34,12 @@
     color: $color-text;
     padding: 2rem 1rem 1rem 1rem;
     margin-top: 2rem;
+    display: inline-block;
   }
 
   &__product--box {
     display: flex;
+    align-items: center;
     justify-content: flex-start;
     width: max-content;
     padding: 0 0.5rem;

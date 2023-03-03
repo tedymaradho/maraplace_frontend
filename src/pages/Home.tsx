@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import ProductGrid from '../components/ProductGrid';
+import { AiFillRightCircle } from 'react-icons/ai';
 
 const Home = () => {
   const [productsNew, setProductsNew] = useState([]);
@@ -47,17 +48,29 @@ const Home = () => {
         {productsDisc.length > 0 && (
           <h1 className="home__product--title">Special Discount</h1>
         )}
+        {productsDisc.length >= 10 && (
+          <span className="home__see--all">| See all</span>
+        )}
         <div className="home__product--scroll">
           <div className="home__product--box">
             {productsDisc.map((product) => {
               const { IdProduct } = product;
               return <ProductGrid key={IdProduct} product={product} />;
             })}
+            {productsDisc.length >= 10 && (
+              <div className="home__see--all">
+                <AiFillRightCircle className="home__btn--see-all" />
+                <p>See all</p>
+              </div>
+            )}
           </div>
         </div>
 
         {productsNew.length > 0 && (
           <h1 className="home__product--title">New Arrivals</h1>
+        )}
+        {productsNew.length >= 10 && (
+          <span className="home__see--all">| See all</span>
         )}
         <div className="home__product--scroll">
           <div className="home__product--box">
@@ -65,11 +78,20 @@ const Home = () => {
               const { IdProduct } = product;
               return <ProductGrid key={IdProduct} product={product} />;
             })}
+            {productsNew.length >= 10 && (
+              <div className="home__see--all">
+                <AiFillRightCircle className="home__btn--see-all" />
+                <p>See all</p>
+              </div>
+            )}
           </div>
         </div>
 
         {productsMostSold.length > 0 && (
           <h1 className="home__product--title">The Most Sold</h1>
+        )}
+        {productsMostSold.length >= 10 && (
+          <span className="home__see--all">| See all</span>
         )}
         <div className="home__product--scroll">
           <div className="home__product--box">
@@ -77,11 +99,20 @@ const Home = () => {
               const { IdProduct } = product;
               return <ProductGrid key={IdProduct} product={product} />;
             })}
+            {productsMostSold.length >= 10 && (
+              <div className="home__see--all">
+                <AiFillRightCircle className="home__btn--see-all" />
+                <p>See all</p>
+              </div>
+            )}
           </div>
         </div>
 
         {productsRecom.length > 0 && (
           <h1 className="home__product--title">Recommendation For You</h1>
+        )}
+        {productsRecom.length >= 10 && (
+          <span className="home__see--all">| See all</span>
         )}
         <div className="home__product--scroll">
           <div className="home__product--box">
@@ -89,6 +120,12 @@ const Home = () => {
               const { IdProduct } = product;
               return <ProductGrid key={IdProduct} product={product} />;
             })}
+            {productsRecom.length >= 10 && (
+              <div className="home__see--all">
+                <AiFillRightCircle className="home__btn--see-all" />
+                <p>See all</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
