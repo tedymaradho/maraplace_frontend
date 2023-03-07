@@ -1,10 +1,11 @@
 .home {
-  padding: 11rem 3rem 3rem 3rem;
+  padding: 8.5rem 3rem 3rem 3rem;
 
   &__header {
   }
 
   &__see--all {
+    text-decoration: none;
     font-size: 1.7rem;
     color: $color-text;
     border: none;

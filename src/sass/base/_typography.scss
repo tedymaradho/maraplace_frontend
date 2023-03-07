@@ -1,62 +1,20 @@
 .heading {
-  font-family: 'El Messiri', sans-serif;
-  font-weight: 700;
-  width: fit-content;
-  font-weight: bold;
-  margin-bottom: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
 
   &__primary {
-    font-size: 7rem;
-    line-height: 9rem;
+    font-size: 3.5rem;
 
     @include respond(tab-port) {
-      font-size: 5.5rem;
-      line-height: 7rem;
+      font-size: 3rem;
     }
   }
 
   &__secondary {
-    font-size: 5.5rem;
-    line-height: 8rem;
+    font-size: 2.5rem;
 
     @include respond(tab-port) {
-      font-size: 4.5rem;
-      line-height: 7rem;
+      font-size: 2rem;
     }
   }
-
-  &--dark {
-    color: $color-primary;
-
-    @supports (-webkit-background-clip: text) or (background-clip: text) {
-      background: linear-gradient(
-        to left top,
-        $color-text 0%,
-        $color-primary 50%
-      );
-      -webkit-background-clip: text;
-      -moz-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: transparent;
-    }
-  }
-
-  &--light {
-    color: $color-bg;
-  }
-
-  &--weak {
-    font-size: 4rem;
-  }
-}
-
-.subtitle {
-  font-size: 1.7rem;
-  width: fit-content;
-  margin-bottom: 1rem;
-  line-height: 3.3rem;
-  opacity: 85%;
-  position: relative;
-  z-index: 1;
 }

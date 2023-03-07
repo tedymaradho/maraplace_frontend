@@ -22,6 +22,8 @@
     color: rgba(0, 0, 0, 0.5);
   }
 
+  &__male,
+  &__female,
   &__hat,
   &__jacket,
   &__shoes,
@@ -33,12 +35,6 @@
   &__bag {
     font-size: 5rem;
     color: $color-primary;
-  }
-
-  &__all {
-    font-size: 5rem;
-    color: #555;
-    cursor: pointer;
   }
 
   &__fb {
@@ -59,5 +55,17 @@
   &__yt {
     font-size: 3.35rem;
     cursor: pointer;
+  }
+
+  &__react {
+    font-size: 1.5rem;
+  }
+
+  &__typscript {
+    font-size: 1rem;
+  }
+
+  &__nodejs {
+    font-size: 1.5rem;
   }
 }

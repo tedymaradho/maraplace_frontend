@@ -10,6 +10,11 @@
     width: 20rem;
     height: 20rem;
     object-fit: cover;
+    transition: transform 0.5s;
+
+    &:hover {
+      transform: scale(1.1);
+    }
   }
 
   &__item--box {
@@ -17,6 +22,9 @@
   }
 
   &__title {
+    text-decoration: none;
+    color: $color-text;
+    cursor: pointer;
     font-size: 1.7rem;
     font-weight: 400;
     margin: 1rem 0;
@@ -25,6 +33,10 @@
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   &__price,

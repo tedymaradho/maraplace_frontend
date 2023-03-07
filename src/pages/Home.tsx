@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import ProductGrid from '../components/ProductGrid';
 import { AiFillRightCircle } from 'react-icons/ai';
@@ -9,21 +10,31 @@ const Home = () => {
   const [productsDisc, setProductsDisc] = useState([]);
   const [productsRecom, setProductsRecom] = useState([]);
 
+  const queryLimit = 8;
+
   useEffect(() => {
     fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/products?Disc[gt]=0&limit=10`
+      `${
+        import.meta.env.VITE_BACKEND_URL
+      }/api/products?Disc[gt]=0&limit=${queryLimit}`
     )
       .then((response) => response.json())
       .then((res) => setProductsDisc(res.data.products))
       .catch((err) => console.error(err.message));
 
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/products?Flag=new&limit=10`)
+    fetch(
+      `${
+        import.meta.env.VITE_BACKEND_URL
+      }/api/products?Flag=new&sort=-CreatedAt&limit=${queryLimit}`
+    )
       .then((response) => response.json())
       .then((res) => setProductsNew(res.data.products))
       .catch((err) => console.error(err.message));
 
     fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/products?sort=-Sold&limit=10`
+      `${
+        import.meta.env.VITE_BACKEND_URL
+      }/api/products?Sold[gt]=5&sort=-Sold&limit=${queryLimit}`
     )
       .then((response) => response.json())
       .then((res) => setProductsMostSold(res.data.products))
@@ -32,11 +43,21 @@ const Home = () => {
     fetch(
       `${
         import.meta.env.VITE_BACKEND_URL
-      }/api/products?Flag=recommended&limit=10`
+      }/api/products?Flag=recommended&sort=-CreatedAt&limit=${queryLimit}`
     )
       .then((response) => response.json())
       .then((res) => setProductsRecom(res.data.products))
       .catch((err) => console.error(err.message));
+  }, []);
+
+  useEffect(() => {
+    const handleContextmenu = (e: any) => {
+      e.preventDefault();
+    };
+    document.addEventListener('contextmenu', handleContextmenu);
+    return function cleanup() {
+      document.removeEventListener('contextmenu', handleContextmenu);
+    };
   }, []);
 
   return (
@@ -48,20 +69,23 @@ const Home = () => {
         {productsDisc.length > 0 && (
           <h1 className="home__product--title">Special Discount</h1>
         )}
-        {productsDisc.length >= 10 && (
-          <span className="home__see--all">| See all</span>
+        {productsDisc.length >= queryLimit && (
+          <Link to="special-discount" className="home__see--all">
+            | See all
+          </Link>
         )}
         <div className="home__product--scroll">
           <div className="home__product--box">
-            {productsDisc.map((product) => {
-              const { IdProduct } = product;
-              return <ProductGrid key={IdProduct} product={product} />;
-            })}
-            {productsDisc.length >= 10 && (
-              <div className="home__see--all">
+            {productsDisc &&
+              productsDisc.map((product) => {
+                const { IdProduct } = product;
+                return <ProductGrid key={IdProduct} product={product} />;
+              })}
+            {productsDisc.length >= queryLimit && (
+              <Link to="special-discount" className="home__see--all">
                 <AiFillRightCircle className="home__btn--see-all" />
-                <p>See all</p>
-              </div>
+                <p>See more</p>
+              </Link>
             )}
           </div>
         </div>
@@ -69,20 +93,23 @@ const Home = () => {
         {productsNew.length > 0 && (
           <h1 className="home__product--title">New Arrivals</h1>
         )}
-        {productsNew.length >= 10 && (
-          <span className="home__see--all">| See all</span>
+        {productsNew.length >= queryLimit && (
+          <Link to="new-arrivals" className="home__see--all">
+            | See all
+          </Link>
         )}
         <div className="home__product--scroll">
           <div className="home__product--box">
-            {productsNew.map((product) => {
-              const { IdProduct } = product;
-              return <ProductGrid key={IdProduct} product={product} />;
-            })}
-            {productsNew.length >= 10 && (
-              <div className="home__see--all">
+            {productsNew &&
+              productsNew.map((product) => {
+                const { IdProduct } = product;
+                return <ProductGrid key={IdProduct} product={product} />;
+              })}
+            {productsNew.length >= queryLimit && (
+              <Link to="new-arrivals" className="home__see--all">
                 <AiFillRightCircle className="home__btn--see-all" />
-                <p>See all</p>
-              </div>
+                <p>See more</p>
+              </Link>
             )}
           </div>
         </div>
@@ -90,20 +117,23 @@ const Home = () => {
         {productsMostSold.length > 0 && (
           <h1 className="home__product--title">The Most Sold</h1>
         )}
-        {productsMostSold.length >= 10 && (
-          <span className="home__see--all">| See all</span>
+        {productsMostSold.length >= queryLimit && (
+          <Link to="most-sold" className="home__see--all">
+            | See all
+          </Link>
         )}
         <div className="home__product--scroll">
           <div className="home__product--box">
-            {productsMostSold.map((product) => {
-              const { IdProduct } = product;
-              return <ProductGrid key={IdProduct} product={product} />;
-            })}
-            {productsMostSold.length >= 10 && (
-              <div className="home__see--all">
+            {productsMostSold &&
+              productsMostSold.map((product) => {
+                const { IdProduct } = product;
+                return <ProductGrid key={IdProduct} product={product} />;
+              })}
+            {productsMostSold.length >= queryLimit && (
+              <Link to="most-sold" className="home__see--all">
                 <AiFillRightCircle className="home__btn--see-all" />
-                <p>See all</p>
-              </div>
+                <p>See more</p>
+              </Link>
             )}
           </div>
         </div>
@@ -111,20 +141,23 @@ const Home = () => {
         {productsRecom.length > 0 && (
           <h1 className="home__product--title">Recommendation For You</h1>
         )}
-        {productsRecom.length >= 10 && (
-          <span className="home__see--all">| See all</span>
+        {productsRecom.length >= queryLimit && (
+          <Link to="recommendation" className="home__see--all">
+            | See all
+          </Link>
         )}
         <div className="home__product--scroll">
           <div className="home__product--box">
-            {productsRecom.map((product) => {
-              const { IdProduct } = product;
-              return <ProductGrid key={IdProduct} product={product} />;
-            })}
-            {productsRecom.length >= 10 && (
-              <div className="home__see--all">
+            {productsRecom &&
+              productsRecom.map((product) => {
+                const { IdProduct } = product;
+                return <ProductGrid key={IdProduct} product={product} />;
+              })}
+            {productsRecom.length >= queryLimit && (
+              <Link to="recommendation" className="home__see--all">
                 <AiFillRightCircle className="home__btn--see-all" />
-                <p>See all</p>
-              </div>
+                <p>See more</p>
+              </Link>
             )}
           </div>
         </div>

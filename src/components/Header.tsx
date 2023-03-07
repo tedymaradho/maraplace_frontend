@@ -6,11 +6,11 @@ import {
   GiUnderwearShorts,
   GiArmoredPants,
 } from 'react-icons/gi';
-import { FaRedhat, FaTshirt } from 'react-icons/fa';
+import { FaRedhat, FaTshirt, FaMale, FaFemale } from 'react-icons/fa';
 import { BsFillHandbagFill } from 'react-icons/bs';
 import { AiFillRightCircle, AiFillLeftCircle } from 'react-icons/ai';
-import { BiGridSmall } from 'react-icons/bi';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [bannersImage, setBannersImage] = useState([]);
@@ -67,46 +67,50 @@ const Header = () => {
       </div>
 
       <div className="header__category">
-        <label className="header__category--label">
+        <Link to="Gender=male" className="header__category--label">
+          <FaMale className="icon__male" />
+          Male
+        </Link>
+        <Link to="Gender=female" className="header__category--label">
+          <FaFemale className="icon__female" />
+          Female
+        </Link>
+        <Link to="Category=dress" className="header__category--label">
           <GiLargeDress className="icon__dress" />
           Dress
-        </label>
-        <label className="header__category--label">
+        </Link>
+        <Link to="Category=shirt" className="header__category--label">
           <FaTshirt className="icon__shirt" />
           Shirt
-        </label>
-        <label className="header__category--label">
+        </Link>
+        <Link to="Category=pants" className="header__category--label">
           <GiArmoredPants className="icon__pants" />
           Long pants
-        </label>
-        <label className="header__category--label">
+        </Link>
+        <Link to="Category=shorts" className="header__category--label">
           <GiUnderwearShorts className="icon__shorts" />
           Shorts
-        </label>
-        <label className="header__category--label">
+        </Link>
+        <Link to="Category=bag" className="header__category--label">
           <BsFillHandbagFill className="icon__bag" />
           Bag
-        </label>
-        <label className="header__category--label">
+        </Link>
+        <Link to="Category=hat" className="header__category--label">
           <FaRedhat className="icon__hat" />
           Hat
-        </label>
-        <label className="header__category--label">
+        </Link>
+        <Link to="Category=jacket" className="header__category--label">
           <GiMonclerJacket className="icon__jacket" />
           Jacket
-        </label>
-        <label className="header__category--label">
+        </Link>
+        <Link to="Category=shoes" className="header__category--label">
           <GiSonicShoes className="icon__shoes" />
           Shoes
-        </label>
-        <label className="header__category--label">
+        </Link>
+        <Link to="Category=slippers" className="header__category--label">
           <GiSlippers className="icon__slippers" />
           Slippers
-        </label>
-        <label className="header__category--label">
-          <BiGridSmall className="icon__all" />
-          All categories
-        </label>
+        </Link>
       </div>
     </div>
   );

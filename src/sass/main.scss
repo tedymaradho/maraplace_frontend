@@ -6,7 +6,6 @@
 @import './base/typography';
 @import './base/utilities';
 
-@import './components/announcement';
 @import './components/buttons';
 @import './components/footer';
 @import './components/header';
@@ -14,3 +13,5 @@
 @import './components/product-grid';
 
 @import './pages/home';
+@import './pages/category-product';
+@import './pages/details-product';

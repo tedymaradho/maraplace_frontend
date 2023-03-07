@@ -3,16 +3,19 @@
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: flex-start;
-  background: linear-gradient(to top left, $color-text, $color-primary);
   color: #fff;
   gap: 5rem;
   padding: 3rem;
+
+  &__container {
+    background: linear-gradient(to top left, $color-text, $color-primary);
+  }
 
   &__list {
     font-size: 1.4rem;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 3rem;
     list-style: none;
 
     &--title {
@@ -28,5 +31,17 @@
   &__icons {
     display: flex;
     align-items: center;
+    gap: 1rem;
+  }
+
+  &__icon--app-store {
+    width: 30rem;
+  }
+
+  &__developer {
+    font-size: 1.4rem;
+    font-weight: 100;
+    color: $color-bg;
+    padding: 3rem;
   }
 }
