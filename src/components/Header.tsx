@@ -11,16 +11,17 @@ import { BsFillHandbagFill } from 'react-icons/bs';
 import { AiFillRightCircle, AiFillLeftCircle } from 'react-icons/ai';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Header = () => {
   const [bannersImage, setBannersImage] = useState([]);
   const [marginLeft, setMarginLeft] = useState(0);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/settings?IdSetting=banner`)
-      .then((response) => response.json())
-      .then((res) => setBannersImage(res.data.setting[0].Set1))
-      .catch((err) => console.error(err.message));
+    axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/settings?IdSetting=banner`)
+      .then((res) => setBannersImage(res.data.data.setting[0].Set1))
+      .catch((err) => console.error(err));
   }, []);
 
   const prevImageHandler = () => {

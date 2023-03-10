@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ProductGrid from '../components/ProductGrid';
+import axios from 'axios';
 
 const CategoryProduct = () => {
   const [category, setCategory] = useState([]);
@@ -9,67 +10,67 @@ const CategoryProduct = () => {
   useEffect(() => {
     switch (params.category) {
       case 'special-discount':
-        fetch(
-          `${
-            import.meta.env.VITE_BACKEND_URL
-          }/api/products?Disc[gt]=0&page=1&limit=50`
-        )
-          .then((response) => response.json())
-          .then((res) => setCategory(res.data.products))
-          .catch((err) => console.error(err.message));
+        axios
+          .get(
+            `${
+              import.meta.env.VITE_BACKEND_URL
+            }/api/products?Disc[gt]=0&page=1&limit=50`
+          )
+          .then((res) => setCategory(res.data.data.products))
+          .catch((err) => console.error(err));
         break;
       case 'new-arrivals':
-        fetch(
-          `${
-            import.meta.env.VITE_BACKEND_URL
-          }/api/products?Flag=new&sort=-CreatedAt&page=1&limit=50`
-        )
-          .then((response) => response.json())
-          .then((res) => setCategory(res.data.products))
-          .catch((err) => console.error(err.message));
+        axios
+          .get(
+            `${
+              import.meta.env.VITE_BACKEND_URL
+            }/api/products?Flag=new&sort=-CreatedAt&page=1&limit=50`
+          )
+          .then((res) => setCategory(res.data.data.products))
+          .catch((err) => console.error(err));
         break;
       case 'most-sold':
-        fetch(
-          `${
-            import.meta.env.VITE_BACKEND_URL
-          }/api/products?Sold[gt]=10&sort=-Sold&page=1&limit=50`
-        )
-          .then((response) => response.json())
-          .then((res) => setCategory(res.data.products))
-          .catch((err) => console.error(err.message));
+        axios
+          .get(
+            `${
+              import.meta.env.VITE_BACKEND_URL
+            }/api/products?Sold[gt]=10&sort=-Sold&page=1&limit=50`
+          )
+          .then((res) => setCategory(res.data.data.products))
+          .catch((err) => console.error(err));
         break;
       case 'recommendation':
-        fetch(
-          `${
-            import.meta.env.VITE_BACKEND_URL
-          }/api/products?Flag=recommended&sort=-CreatedAt&page=1&limit=50`
-        )
-          .then((response) => response.json())
-          .then((res) => setCategory(res.data.products))
-          .catch((err) => console.error(err.message));
+        axios
+          .get(
+            `${
+              import.meta.env.VITE_BACKEND_URL
+            }/api/products?Flag=recommended&sort=-CreatedAt&page=1&limit=50`
+          )
+          .then((res) => setCategory(res.data.data.products))
+          .catch((err) => console.error(err));
         break;
       default:
         if (`${params.category}`.search(/,/) > 0) {
           if (params.category) {
             const param = `${params.category}`.replaceAll(',', '&Category=');
-            fetch(
-              `${
-                import.meta.env.VITE_BACKEND_URL
-              }/api/products?${param}&page=1&limit=50`
-            )
-              .then((response) => response.json())
-              .then((res) => setCategory(res.data.products))
-              .catch((err) => console.error(err.message));
+            axios
+              .get(
+                `${
+                  import.meta.env.VITE_BACKEND_URL
+                }/api/products?${param}&page=1&limit=50`
+              )
+              .then((res) => setCategory(res.data.data.products))
+              .catch((err) => console.error(err));
           }
         } else {
-          fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/products?${
-              params.category
-            }&page=1&limit=50`
-          )
-            .then((response) => response.json())
-            .then((res) => setCategory(res.data.products))
-            .catch((err) => console.error(err.message));
+          axios
+            .get(
+              `${import.meta.env.VITE_BACKEND_URL}/api/products?${
+                params.category
+              }&page=1&limit=50`
+            )
+            .then((res) => setCategory(res.data.data.products))
+            .catch((err) => console.error(err));
         }
     }
   }, [params.category]);
@@ -92,6 +93,8 @@ const CategoryProduct = () => {
           .replace(/-/g, ' ')
           .replace('CATEGORY=', '')
           .replace('GENDER=', '')
+          .replace('PRODUCTNAME[REGEX]=', '')
+          .replace('OPTIONS', '')
           .replace(/,/g, ', ')}
       </h1>
       <div className="category__product">

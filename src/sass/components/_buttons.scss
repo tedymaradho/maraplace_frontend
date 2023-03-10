@@ -1,18 +1,51 @@
 .btn {
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 6px;
+  border: none;
+
+  &--primary {
+    background: linear-gradient(to bottom, $color-primary, $color-text);
+    color: white;
+
+    &:hover {
+      background: linear-gradient(
+        to bottom,
+        $color-primary-light,
+        $color-text-light
+      );
+    }
+  }
+
+  &--secondary {
+    background: linear-gradient(to bottom, $color-secondary, $color-text);
+    color: white;
+
+    &:hover {
+      background: linear-gradient(
+        to bottom,
+        $color-secondary-light,
+        $color-text-light
+      );
+    }
+  }
 
   &--sm {
-    padding: 5px 10px;
-    font-size: 1.5rem;
+    padding: 0.6rem 1rem;
+    font-size: 1.4rem;
     font-weight: 400;
   }
+
+  &--lg {
+    font-size: 1.7rem;
+    padding: 0.7rem 1.5rem;
+  }
+
   &--invert {
     border: 1px solid lightgray;
     background-color: white;
 
     &:hover {
-      background-color: $color-text;
+      background: linear-gradient(to bottom, $color-primary, $color-text);
       color: white;
     }
   }

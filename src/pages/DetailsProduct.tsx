@@ -1,20 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { AiFillPlusSquare, AiFillMinusSquare } from 'react-icons/ai';
+import axios from 'axios';
 
 const DetailsProduct = () => {
   const params = useParams();
   const [product, setProduct] = useState([]);
   const [imageIndex, setImageIndex] = useState(0);
+  const [qty, setQty] = useState(1);
 
   useEffect(() => {
-    fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/products?IdProduct=${
-        params.idproduct
-      }`
-    )
-      .then((response) => response.json())
-      .then((res) => setProduct(res.data.products))
-      .catch((err) => console.error(err.message));
+    axios
+      .get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/products?IdProduct=${
+          params.idproduct
+        }`
+      )
+      .then((res) => setProduct(res.data.data.products))
+      .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
@@ -35,7 +38,7 @@ const DetailsProduct = () => {
             const {
               IdProduct,
               ImageUrl,
-              Name,
+              ProductName,
               Merk,
               Size,
               Category,
@@ -47,20 +50,20 @@ const DetailsProduct = () => {
               Sold,
               Flag,
             } = prod;
+
             return (
               <div className="details-product__box" key={IdProduct}>
                 <div className="details-product--left">
                   <img
                     className="details-product__img"
                     src={ImageUrl[imageIndex]}
-                    alt={`Image of ${Name}`}
+                    alt={`Image of ${ProductName}`}
                   />
                   <div className="details-product__img--slider-box">
                     {ImageUrl &&
                       [...ImageUrl].map((ImgUrl, idx) => {
                         return (
-                          <a
-                            href="#"
+                          <button
                             className="details-product__img--link"
                             key={idx}
                             onClick={() => setImageIndex(idx)}
@@ -68,15 +71,15 @@ const DetailsProduct = () => {
                             <img
                               className="details-product__img--slider"
                               src={ImgUrl}
-                              alt={`Image of ${Name}`}
+                              alt={`Image of ${ProductName}`}
                             />
-                          </a>
+                          </button>
                         );
                       })}
                   </div>
                 </div>
                 <div className="details-product--right">
-                  <h1 className="heading heading__secondary">{Name}</h1>
+                  <h1 className="heading heading__secondary">{ProductName}</h1>
                   {Disc > 0 ? (
                     <>
                       <div className="details-product__disc--box">
@@ -103,16 +106,37 @@ const DetailsProduct = () => {
                   <p className="details-product--item">Sold: {Sold}</p>
                   <p className="details-product--item">Stock: {Stock}</p>
                   <div className="details-product__cta">
-                    <label>
+                    <label className="details-product__qty--label">
                       Quantity&ensp;
-                      <input type="number" className="details-product__note" />
+                      <div className="details-product__qty">
+                        <AiFillMinusSquare
+                          onClick={() => qty > 1 && setQty(qty - 1)}
+                          className="details-product__qty--decrease"
+                        />
+                        <input
+                          type="text"
+                          className="details-product__qty--input"
+                          value={qty}
+                          onChange={(e) =>
+                            +e.target.value > 0 && +e.target.value <= Stock
+                              ? setQty(+e.target.value)
+                              : qty
+                          }
+                        />
+                        <AiFillPlusSquare
+                          onClick={() => qty < Stock && setQty(qty + 1)}
+                          className="details-product__qty--increase"
+                        />
+                      </div>
                     </label>
-                    <button className="details-product__cta--cart">
-                      Add to cart
-                    </button>
-                    <button className="details-product__cta--buy">
-                      Buy directly
-                    </button>
+                    <div className="details-product__btn--box">
+                      <button className="btn btn--primary btn--lg">
+                        Add to cart
+                      </button>
+                      <button className="btn btn--secondary btn--lg">
+                        Buy directly
+                      </button>
+                    </div>
                   </div>
                   <p className="details-product--desc">
                     {`${Desc}`.replaceAll('\\n', '\n')}

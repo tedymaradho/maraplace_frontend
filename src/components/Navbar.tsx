@@ -3,12 +3,17 @@ import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { BiSearchAlt } from 'react-icons/bi';
 import { FaShoppingCart } from 'react-icons/fa';
 import Footer from './Footer';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { Select, SelectChangeEvent, MenuItem, Badge } from '@mui/material/';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { cartCountAtom, currentUserAtom } from '../recoils';
+import axios from 'axios';
 
 const Navbar = () => {
   const [categoryMany, setCategoryMany] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
+  const [cartDropdownOpen, setCartDropdownOpen] = useState<boolean>(false);
+  const currentUser = useRecoilValue<string>(currentUserAtom);
+  const [cartCount, setCartCount] = useRecoilState<number>(cartCountAtom);
 
   const navigate = useNavigate();
 
@@ -34,11 +39,18 @@ const Navbar = () => {
 
   useEffect(() => {
     if (searchText.length > 0) {
-      navigate(`Name[regex]=${searchText}`);
+      navigate(`ProductName[regex]=${searchText}options`);
     } else {
       navigate('/');
     }
   }, [searchText]);
+
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${currentUser}`)
+      .then((res) => setCartCount(res.data.data[0].sumQty))
+      .catch((err) => console.error(err));
+  }, [cartCount]);
 
   const categoryChangeHandler = (
     event: SelectChangeEvent<typeof categoryMany>
@@ -70,7 +82,7 @@ const Navbar = () => {
             <input
               className="navbar__search--input"
               type="text"
-              placeholder="Search..."
+              placeholder="Search by product name..."
               onChange={searchChangeHandler}
               value={searchText}
             />
@@ -89,13 +101,13 @@ const Navbar = () => {
 
               return selected.join(',');
             }}
-            style={{ fontSize: '15px', color: 'gray' }}
+            sx={{ fontSize: '1.5rem', color: 'gray' }}
           >
             {options.map((opt) => (
               <MenuItem
+                sx={{ fontSize: '1.5rem' }}
                 key={opt.value}
                 value={opt.value}
-                style={{ fontSize: '15px' }}
               >
                 {opt.label}
               </MenuItem>
@@ -103,7 +115,14 @@ const Navbar = () => {
           </Select>
         </div>
         <div className="navbar__link">
-          <FaShoppingCart className="icon__cart" />
+          <Badge
+            onClick={() => setCartDropdownOpen(!cartDropdownOpen)}
+            badgeContent={cartCount}
+            color="error"
+            className="icon__badge"
+          >
+            <FaShoppingCart className="icon__cart" />
+          </Badge>
           <Link className="navbar__link--item" to="">
             SignUp
           </Link>
@@ -112,6 +131,11 @@ const Navbar = () => {
           </Link>
         </div>
       </div>
+      {cartDropdownOpen && (
+        <div className="navbar__cart--dropdown">
+          <p>Empty items</p>
+        </div>
+      )}
       <Outlet />
       <Footer />
     </div>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import ProductGrid from '../components/ProductGrid';
 import { AiFillRightCircle } from 'react-icons/ai';
+import axios from 'axios';
 
 const Home = () => {
   const [productsNew, setProductsNew] = useState([]);
@@ -13,41 +14,45 @@ const Home = () => {
   const queryLimit = 8;
 
   useEffect(() => {
-    fetch(
-      `${
-        import.meta.env.VITE_BACKEND_URL
-      }/api/products?Disc[gt]=0&limit=${queryLimit}`
-    )
-      .then((response) => response.json())
-      .then((res) => setProductsDisc(res.data.products))
-      .catch((err) => console.error(err.message));
+    const fetchData = async () => {
+      try {
+        const resDisc = await axios.get(
+          `${
+            import.meta.env.VITE_BACKEND_URL
+          }/api/products?Disc[gt]=0&limit=${queryLimit}`
+        );
 
-    fetch(
-      `${
-        import.meta.env.VITE_BACKEND_URL
-      }/api/products?Flag=new&sort=-CreatedAt&limit=${queryLimit}`
-    )
-      .then((response) => response.json())
-      .then((res) => setProductsNew(res.data.products))
-      .catch((err) => console.error(err.message));
+        setProductsDisc(resDisc.data.data.products);
 
-    fetch(
-      `${
-        import.meta.env.VITE_BACKEND_URL
-      }/api/products?Sold[gt]=5&sort=-Sold&limit=${queryLimit}`
-    )
-      .then((response) => response.json())
-      .then((res) => setProductsMostSold(res.data.products))
-      .catch((err) => console.error(err.message));
+        const resNew = await axios.get(
+          `${
+            import.meta.env.VITE_BACKEND_URL
+          }/api/products?Flag=new&sort=-CreatedAt&limit=${queryLimit}`
+        );
 
-    fetch(
-      `${
-        import.meta.env.VITE_BACKEND_URL
-      }/api/products?Flag=recommended&sort=-CreatedAt&limit=${queryLimit}`
-    )
-      .then((response) => response.json())
-      .then((res) => setProductsRecom(res.data.products))
-      .catch((err) => console.error(err.message));
+        setProductsNew(resNew.data.data.products);
+
+        const resSold = await axios.get(
+          `${
+            import.meta.env.VITE_BACKEND_URL
+          }/api/products?Sold[gt]=5&sort=-Sold&limit=${queryLimit}`
+        );
+
+        setProductsMostSold(resSold.data.data.products);
+
+        const resRecom = await axios.get(
+          `${
+            import.meta.env.VITE_BACKEND_URL
+          }/api/products?Flag=recommended&sort=-CreatedAt&limit=${queryLimit}`
+        );
+
+        setProductsRecom(resRecom.data.data.products);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   useEffect(() => {

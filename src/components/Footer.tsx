@@ -2,7 +2,7 @@ import { BsFacebook } from 'react-icons/bs';
 import { TiSocialYoutubeCircular } from 'react-icons/ti';
 import { AiFillTwitterCircle, AiFillInstagram } from 'react-icons/ai';
 import { FaReact, FaNodeJs } from 'react-icons/fa';
-import { SiTypescript, SiMongodb } from 'react-icons/si';
+import { SiTypescript } from 'react-icons/si';
 
 const Footer = () => {
   return (
