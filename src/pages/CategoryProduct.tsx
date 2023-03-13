@@ -16,7 +16,9 @@ const CategoryProduct = () => {
               import.meta.env.VITE_BACKEND_URL
             }/api/products?Disc[gt]=0&page=1&limit=50`
           )
-          .then((res) => setCategory(res.data.data.products))
+          .then(
+            (res) => res.data.results > 0 && setCategory(res.data.data.products)
+          )
           .catch((err) => console.error(err));
         break;
       case 'new-arrivals':
@@ -26,7 +28,9 @@ const CategoryProduct = () => {
               import.meta.env.VITE_BACKEND_URL
             }/api/products?Flag=new&sort=-CreatedAt&page=1&limit=50`
           )
-          .then((res) => setCategory(res.data.data.products))
+          .then(
+            (res) => res.data.results > 0 && setCategory(res.data.data.products)
+          )
           .catch((err) => console.error(err));
         break;
       case 'most-sold':
@@ -36,7 +40,9 @@ const CategoryProduct = () => {
               import.meta.env.VITE_BACKEND_URL
             }/api/products?Sold[gt]=10&sort=-Sold&page=1&limit=50`
           )
-          .then((res) => setCategory(res.data.data.products))
+          .then(
+            (res) => res.data.results > 0 && setCategory(res.data.data.products)
+          )
           .catch((err) => console.error(err));
         break;
       case 'recommendation':
@@ -46,7 +52,9 @@ const CategoryProduct = () => {
               import.meta.env.VITE_BACKEND_URL
             }/api/products?Flag=recommended&sort=-CreatedAt&page=1&limit=50`
           )
-          .then((res) => setCategory(res.data.data.products))
+          .then(
+            (res) => res.data.results > 0 && setCategory(res.data.data.products)
+          )
           .catch((err) => console.error(err));
         break;
       default:
@@ -59,7 +67,10 @@ const CategoryProduct = () => {
                   import.meta.env.VITE_BACKEND_URL
                 }/api/products?${param}&page=1&limit=50`
               )
-              .then((res) => setCategory(res.data.data.products))
+              .then(
+                (res) =>
+                  res.data.results > 0 && setCategory(res.data.data.products)
+              )
               .catch((err) => console.error(err));
           }
         } else {
@@ -69,21 +80,14 @@ const CategoryProduct = () => {
                 params.category
               }&page=1&limit=50`
             )
-            .then((res) => setCategory(res.data.data.products))
+            .then(
+              (res) =>
+                res.data.results > 0 && setCategory(res.data.data.products)
+            )
             .catch((err) => console.error(err));
         }
     }
   }, [params.category]);
-
-  useEffect(() => {
-    const handleContextmenu = (e: any) => {
-      e.preventDefault();
-    };
-    document.addEventListener('contextmenu', handleContextmenu);
-    return function cleanup() {
-      document.removeEventListener('contextmenu', handleContextmenu);
-    };
-  }, []);
 
   return (
     <div className="category">

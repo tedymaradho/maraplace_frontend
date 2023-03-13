@@ -1,8 +1,9 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { currentUserAtom, cartCountAtom } from '../recoils';
+import { FC } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { currentUserAtom, sumQtyAtom, sumSubTotalAtom } from '../recoils';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import axios from 'axios';
+import { FaShoppingCart } from 'react-icons/fa';
 
 interface IProps {
   product: {
@@ -11,45 +12,70 @@ interface IProps {
     ProductName: string;
     Price: number;
     Disc: number;
-    PriceAfterDisc: number;
+    SalePrice: number;
     Category: string;
   };
 }
 
-const ProductGrid: React.FC<IProps> = (props) => {
-  const currentUser = useRecoilValue(currentUserAtom);
-  const setCartCount = useSetRecoilState(cartCountAtom);
-  const {
-    IdProduct,
-    ImageUrl,
-    ProductName,
-    Price,
-    Disc,
-    PriceAfterDisc,
-    Category,
-  } = props.product;
+const ProductGrid: FC<IProps> = (props) => {
+  const { curUserId } = useRecoilValue(currentUserAtom);
+  const setSumQty = useSetRecoilState(sumQtyAtom);
+  const setSumSubTotal = useSetRecoilState(sumSubTotalAtom);
+  const navigate = useNavigate();
+
+  const { IdProduct, ImageUrl, ProductName, Price, Disc, SalePrice, Category } =
+    props.product;
   const priceFormat = new Intl.NumberFormat('en-US').format(Price);
-  const priceDiscFormat = new Intl.NumberFormat('en-US').format(PriceAfterDisc);
+  const salePriceFormat = new Intl.NumberFormat('en-US').format(SalePrice);
 
   const addToCartHandler = async () => {
-    if (currentUser) {
+    if (curUserId) {
       try {
-        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
-          IdUser: currentUser,
-          IdProduct,
-          ImageUrl: ImageUrl[0],
-          ProductName,
-          Quantity: 1,
-        });
-
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${currentUser}`
+        const resFind = await axios.get(
+          `${
+            import.meta.env.VITE_BACKEND_URL
+          }/api/cart?IdUser=${curUserId}&IdProduct=${IdProduct}`
         );
 
-        setCartCount(res.data.data[0].sumQty);
+        if (resFind.data.data.cartItems.length > 0) {
+          await axios.patch(
+            `${import.meta.env.VITE_BACKEND_URL}/api/cart/${
+              resFind.data.data.cartItems[0]._id
+            }`,
+            {
+              Qty: resFind.data.data.cartItems[0].Qty + 1,
+              SubTotal:
+                resFind.data.data.cartItems[0].SalePrice *
+                (resFind.data.data.cartItems[0].Qty + 1),
+            }
+          );
+        } else {
+          await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
+            IdUser: curUserId,
+            IdProduct,
+            ImageUrl: ImageUrl[0],
+            ProductName,
+            Price,
+            Disc,
+            Qty: 1,
+            SalePrice,
+            SubTotal: SalePrice,
+          });
+        }
+
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUserId}`
+        );
+
+        if (res.data.data.length > 0) {
+          setSumQty(res.data.data[0].sumQty);
+          setSumSubTotal(res.data.data[0].sumSubTotal);
+        }
       } catch (error) {
         console.error(error);
       }
+    } else {
+      navigate('/login');
     }
   };
 
@@ -64,22 +90,25 @@ const ProductGrid: React.FC<IProps> = (props) => {
       </Link>
 
       <div className="product-grid__item--box">
-        <Link to={`/${Category}/${IdProduct}`} className="product-grid__title">
-          {ProductName}
-        </Link>
-        {Disc > 0 ? (
-          <div>
+        <div>
+          <Link
+            to={`/${Category}/${IdProduct}`}
+            className="product-grid__title"
+          >
+            {ProductName}
+          </Link>
+
+          {Disc > 0 && (
             <div className="product-grid__disc--box">
               <p className="product-grid__price-before">Rp. {priceFormat}</p>
               <p className="product-grid__disc">{Disc}% off</p>
             </div>
-            <p className="product-grid__price-disc">Rp. {priceDiscFormat}</p>
-          </div>
-        ) : (
-          <p className="product-grid__price">Rp. {priceFormat}</p>
-        )}
+          )}
+          <p className="product-grid__price">Rp. {salePriceFormat}</p>
+        </div>
+
         <button onClick={addToCartHandler} className="btn btn--invert btn--sm">
-          Add to cart
+          <FaShoppingCart className="product-grid__icon--shop" /> Add to cart
         </button>
       </div>
     </div>

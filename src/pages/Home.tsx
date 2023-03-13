@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Header from '../components/Header';
+import Header from '../layouts/Header';
 import ProductGrid from '../components/ProductGrid';
 import { AiFillRightCircle } from 'react-icons/ai';
 import axios from 'axios';
@@ -11,7 +11,7 @@ const Home = () => {
   const [productsDisc, setProductsDisc] = useState([]);
   const [productsRecom, setProductsRecom] = useState([]);
 
-  const queryLimit = 8;
+  const queryLimit = 7;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,7 +22,7 @@ const Home = () => {
           }/api/products?Disc[gt]=0&limit=${queryLimit}`
         );
 
-        setProductsDisc(resDisc.data.data.products);
+        resDisc.data.results > 0 && setProductsDisc(resDisc.data.data.products);
 
         const resNew = await axios.get(
           `${
@@ -30,7 +30,7 @@ const Home = () => {
           }/api/products?Flag=new&sort=-CreatedAt&limit=${queryLimit}`
         );
 
-        setProductsNew(resNew.data.data.products);
+        resNew.data.results > 0 && setProductsNew(resNew.data.data.products);
 
         const resSold = await axios.get(
           `${
@@ -38,7 +38,8 @@ const Home = () => {
           }/api/products?Sold[gt]=5&sort=-Sold&limit=${queryLimit}`
         );
 
-        setProductsMostSold(resSold.data.data.products);
+        resSold.data.results > 0 &&
+          setProductsMostSold(resSold.data.data.products);
 
         const resRecom = await axios.get(
           `${
@@ -46,23 +47,14 @@ const Home = () => {
           }/api/products?Flag=recommended&sort=-CreatedAt&limit=${queryLimit}`
         );
 
-        setProductsRecom(resRecom.data.data.products);
+        resRecom.data.results > 0 &&
+          setProductsRecom(resRecom.data.data.products);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    const handleContextmenu = (e: any) => {
-      e.preventDefault();
-    };
-    document.addEventListener('contextmenu', handleContextmenu);
-    return function cleanup() {
-      document.removeEventListener('contextmenu', handleContextmenu);
-    };
   }, []);
 
   return (

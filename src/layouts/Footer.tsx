@@ -44,13 +44,17 @@ const Footer = () => {
           </li>
         </ul>
       </div>
-      <p className="footer__developer">
-        Built using <FaReact className="icon__react" />
-        &nbsp;
-        <SiTypescript className="icon__typescript" />
-        &nbsp;
-        <FaNodeJs className="icon__nodejs" /> by Tedy Maradho
-      </p>
+      <div className="footer__developer">
+        Built using
+        <div className="footer__developer--icon">
+          <FaReact className="icon__react" />
+          &nbsp;
+          <SiTypescript className="icon__typescript" />
+          &nbsp;
+          <FaNodeJs className="icon__nodejs" />
+        </div>
+        by Tedy Maradho
+      </div>
     </div>
   );
 };

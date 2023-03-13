@@ -59,9 +59,11 @@
   }
 
   &--title {
+    color: #666;
   }
 
   &--item {
+    color: #666;
     font-size: 1.5rem;
     font-weight: 500;
   }
@@ -92,15 +94,21 @@
   }
 
   &__qty {
+    width: fit-content;
     display: flex;
     align-items: center;
-    border: 1px solid grey;
+    border: 1px solid lightgray;
     border-radius: 6px;
 
-    &--decrease {
+    &--decrease,
+    &--increase {
       font-size: 3.5rem;
       cursor: pointer;
       color: $color-primary;
+
+      &:hover {
+        color: $color-primary-light;
+      }
     }
 
     &--input {
@@ -109,12 +117,6 @@
       text-align: center;
       padding: 0.4rem 1rem;
       border: none;
-      outline: none;
-    }
-    &--increase {
-      color: $color-primary;
-      font-size: 3.5rem;
-      cursor: pointer;
     }
   }
 
@@ -125,6 +127,7 @@
   }
 
   &--desc {
+    color: #666;
     white-space: pre-wrap;
     font-size: 1.5rem;
     font-weight: 500;

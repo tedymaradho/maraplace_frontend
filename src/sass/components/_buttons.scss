@@ -2,17 +2,16 @@
   cursor: pointer;
   border-radius: 6px;
   border: none;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 
   &--primary {
-    background: linear-gradient(to bottom, $color-primary, $color-text);
+    background: linear-gradient(to bottom, $color-primary-light, $color-text);
     color: white;
 
     &:hover {
-      background: linear-gradient(
-        to bottom,
-        $color-primary-light,
-        $color-text-light
-      );
+      background: linear-gradient(to bottom, $color-primary, $color-text-light);
     }
   }
 
@@ -31,7 +30,7 @@
 
   &--sm {
     padding: 0.6rem 1rem;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 400;
   }
 
@@ -43,9 +42,10 @@
   &--invert {
     border: 1px solid lightgray;
     background-color: white;
+    color: $color-primary-dark;
 
     &:hover {
-      background: linear-gradient(to bottom, $color-primary, $color-text);
+      background: linear-gradient(to bottom, $color-primary-light, $color-text);
       color: white;
     }
   }

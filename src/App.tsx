@@ -1,9 +1,10 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import Navbar from './layouts/Navbar';
 import Home from './pages/Home';
 import CategoryProduct from './pages/CategoryProduct';
 import './sass/main.scss';
 import DetailsProduct from './pages/DetailsProduct';
+import Checkout from './pages/Chekout';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path=":category" element={<CategoryProduct />} />
           <Route path=":category/:idproduct" element={<DetailsProduct />} />
+          <Route path="checkout" element={<Checkout />} />
         </Route>
       </Routes>
     </BrowserRouter>

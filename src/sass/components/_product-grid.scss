@@ -18,7 +18,11 @@
   }
 
   &__item--box {
+    height: 14.6rem;
     padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   &__title {
@@ -39,8 +43,7 @@
     }
   }
 
-  &__price,
-  &__price-disc {
+  &__price {
     font-size: 1.8rem;
     font-weight: 700;
     margin-bottom: 1rem;

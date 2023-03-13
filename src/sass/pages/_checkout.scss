@@ -1,0 +1,162 @@
+.checkout {
+  padding: 8.5rem 3rem 3rem 3rem;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 3rem;
+
+  &__left {
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    padding: 1rem;
+  }
+
+  & table {
+    font-size: 1.7rem;
+    width: 100%;
+    border-spacing: 0.5rem;
+  }
+
+  & th {
+    text-align: center;
+    text-transform: uppercase;
+    border-bottom: 1px solid lightgray;
+    padding: 1rem 0;
+  }
+
+  &__td--qty {
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__td--qty-box {
+    width: fit-content;
+    border: 1px solid lightgray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+  }
+
+  &__qty--input {
+    text-align: center;
+    width: 5rem;
+    font-size: 1.7rem;
+    border: none;
+  }
+
+  &__cart--img {
+    width: 5rem;
+    height: 5rem;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+
+  &__price--right {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  &__price--center {
+    text-align: center;
+  }
+
+  &__price--disc {
+    color: red;
+    text-align: center;
+  }
+
+  &__price--stright {
+    text-decoration: line-through;
+  }
+
+  &__table--foot {
+    font-weight: 600;
+
+    & td {
+      border-top: 1px solid lightgray;
+      padding: 1rem 0;
+    }
+  }
+
+  &__icon--minus,
+  &__icon--plus {
+    font-size: 2.5rem;
+    cursor: pointer;
+    color: $color-primary;
+
+    &:hover {
+      color: $color-primary-light;
+    }
+  }
+
+  &__icon--delete {
+    margin-left: 0.5rem;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: $color-primary-dark;
+
+    &:hover {
+      color: $color-primary;
+    }
+  }
+
+  &__right {
+    font-size: 1.4rem;
+    line-height: 1.5;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__address--label {
+    font-weight: 600;
+  }
+
+  &__address--textarea {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.4rem;
+    width: 100%;
+    min-height: 6rem;
+    border: 1px solid lightgray;
+    padding: 0.5rem;
+    color: gray;
+  }
+
+  &__address--input {
+    width: 100%;
+    font-size: 1.4rem;
+    border: 1px solid lightgray;
+    padding: 0.5rem;
+    color: gray;
+
+    & option {
+      color: #555;
+    }
+  }
+
+  &__payment--hr {
+    margin-top: 2rem;
+    opacity: 0.1;
+  }
+
+  &__total-bill {
+    margin-top: 2rem;
+    font-size: 1.7rem;
+    font-weight: 700;
+  }
+
+  &__btn--pay {
+    margin-top: 2rem;
+    background-color: $color-primary;
+    color: white;
+
+    &:hover {
+      background-color: $color-primary-light;
+    }
+  }
+}
