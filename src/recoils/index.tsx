@@ -5,6 +5,9 @@ export const currentUserAtom = atom({
   default: {
     curUserId: 'U01',
     curUserName: 'Tedy Maradho Pasa',
+    curUserAddress:
+      'Bungurasih dalama 24 RT.002 RW.003 Bungurasih, Waru, Sidoarjo, 61256.',
+    curUserPhone: '085234782302',
   },
 });
 

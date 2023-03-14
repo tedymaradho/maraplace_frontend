@@ -4,10 +4,19 @@
   grid-template-columns: 3fr 1fr;
   gap: 3rem;
 
+  @include respond(phone) {
+    padding: 14rem 1rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+
   &__left {
+    height: fit-content;
     border: 1px solid lightgray;
     border-radius: 10px;
     padding: 1rem;
+
+    overflow-x: scroll;
   }
 
   & table {
@@ -103,7 +112,8 @@
   }
 
   &__right {
-    font-size: 1.4rem;
+    height: fit-content;
+    font-size: 1.5rem;
     line-height: 1.5;
     border: 1px solid lightgray;
     border-radius: 10px;
@@ -114,7 +124,8 @@
   }
 
   &__address--label {
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 500;
   }
 
   &__address--textarea {
@@ -133,10 +144,6 @@
     border: 1px solid lightgray;
     padding: 0.5rem;
     color: gray;
-
-    & option {
-      color: #555;
-    }
   }
 
   &__payment--hr {
@@ -144,19 +151,34 @@
     opacity: 0.1;
   }
 
-  &__total-bill {
-    margin-top: 2rem;
-    font-size: 1.7rem;
+  &__payment--label {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+  &__payment--select {
+    width: 100%;
+    font-size: 1.4rem;
+    border: 1px solid lightgray;
+    padding: 0.5rem;
+    color: gray;
+
+    & option {
+      color: #555;
+    }
+  }
+
+  &__payment--total-label {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  &__payment--total {
+    font-size: 1.9rem;
     font-weight: 700;
   }
 
   &__btn--pay {
-    margin-top: 2rem;
-    background-color: $color-primary;
-    color: white;
-
-    &:hover {
-      background-color: $color-primary-light;
-    }
+    margin-top: 1rem;
   }
 }

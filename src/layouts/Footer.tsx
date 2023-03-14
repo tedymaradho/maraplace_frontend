@@ -1,7 +1,7 @@
 import { BsFacebook } from 'react-icons/bs';
 import { TiSocialYoutubeCircular } from 'react-icons/ti';
 import { AiFillTwitterCircle, AiFillInstagram } from 'react-icons/ai';
-import { FaReact, FaNodeJs } from 'react-icons/fa';
+import { FaReact, FaNodeJs, FaSass } from 'react-icons/fa';
 import { SiTypescript } from 'react-icons/si';
 
 const Footer = () => {
@@ -52,6 +52,8 @@ const Footer = () => {
           <SiTypescript className="icon__typescript" />
           &nbsp;
           <FaNodeJs className="icon__nodejs" />
+          &nbsp;
+          <FaSass className="icon__sass" />
         </div>
         by Tedy Maradho
       </div>

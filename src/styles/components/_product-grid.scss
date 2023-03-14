@@ -6,11 +6,21 @@
   background-color: white;
   margin: 1rem 0.5rem;
 
+  @include respond(phone) {
+    width: 15rem;
+    height: 30.5rem;
+  }
+
   &__img {
     width: 20rem;
     height: 20rem;
     object-fit: cover;
     transition: transform 0.5s;
+
+    @include respond(phone) {
+      width: 15rem;
+      height: 15rem;
+    }
 
     &:hover {
       transform: scale(1.1);
@@ -23,6 +33,10 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    @include respond(phone) {
+      padding: 0 10px;
+    }
   }
 
   &__title {
@@ -38,6 +52,10 @@
     line-clamp: 2;
     -webkit-box-orient: vertical;
 
+    @include respond(phone) {
+      font-size: 1.5rem;
+    }
+
     &:hover {
       text-decoration: underline;
     }
@@ -47,6 +65,10 @@
     font-size: 1.8rem;
     font-weight: 700;
     margin-bottom: 1rem;
+
+    @include respond(phone) {
+      font-size: 1.6rem;
+    }
   }
 
   &__disc--box {
@@ -59,10 +81,18 @@
   &__price-before {
     font-size: 1.4rem;
     text-decoration: line-through;
+
+    @include respond(phone) {
+      font-size: 1.2rem;
+    }
   }
 
   &__disc {
     font-size: 1.4rem;
     color: red;
+
+    @include respond(phone) {
+      font-size: 1.2rem;
+    }
   }
 }

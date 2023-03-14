@@ -19,11 +19,11 @@ html {
 
   @include respond(tab-port) {
     // width < 900?
-    font-size: 50%; //1 rem = 8px, 8/16 = 50%
+    font-size: 53%; //1 rem = 8.5px, 8.5/16 = 53%
   }
 }
 
 body {
   box-sizing: border-box;
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
 }

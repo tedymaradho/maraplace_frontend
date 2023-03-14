@@ -1,6 +1,10 @@
 .category {
   padding: 8.5rem 3rem 3rem 3rem;
 
+  @include respond(phone) {
+    padding: 14rem 1rem 1rem 1rem;
+  }
+
   &__title {
     text-align: center;
   }

@@ -1,7 +1,10 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { BiSearchAlt } from 'react-icons/bi';
-import { FaShoppingCart } from 'react-icons/fa';
+import { FaShoppingCart, FaUserAlt } from 'react-icons/fa';
+import { IoMdNotifications } from 'react-icons/io';
+import { RxAvatar } from 'react-icons/rx';
+import { AiFillSetting, AiFillHome } from 'react-icons/ai';
 import Footer from './Footer';
 import { Select, SelectChangeEvent, MenuItem, Badge } from '@mui/material/';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
@@ -17,10 +20,13 @@ const Navbar = () => {
   const [categoryMany, setCategoryMany] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const [cartDropdownOpen, setCartDropdownOpen] = useState<boolean>(false);
-  const { curUserId } = useRecoilValue(currentUserAtom);
+  const [notifDropdownOpen, setNotifDropdownOpen] = useState<boolean>(false);
+  const [avatarDropdownOpen, setAvatarDropdownOpen] = useState<boolean>(false);
+  const [menuDropdownOpen, setMenuDropdownOpen] = useState<boolean>(false);
   const [sumQty, setSumQty] = useRecoilState(sumQtyAtom);
-  const setSumSubTotal = useSetRecoilState(sumSubTotalAtom);
   const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
+  const { curUserId, curUserName } = useRecoilValue(currentUserAtom);
+  const setSumSubTotal = useSetRecoilState(sumSubTotalAtom);
 
   const navigate = useNavigate();
 
@@ -139,47 +145,108 @@ const Navbar = () => {
               ))}
             </Select>
           </div>
+
           <div className="navbar__link">
+            <Link to="/">
+              <AiFillHome className="icon__home" />
+            </Link>
             <Badge
               onClick={() => setCartDropdownOpen(!cartDropdownOpen)}
+              onMouseEnter={() => {
+                setCartDropdownOpen(true);
+                setNotifDropdownOpen(false);
+                setAvatarDropdownOpen(false);
+                setMenuDropdownOpen(false);
+              }}
               badgeContent={sumQty}
               color="error"
               className="icon__badge"
             >
-              <FaShoppingCart className="icon__cart" />
+              <FaShoppingCart
+                onClick={() => setCartDropdownOpen(!cartDropdownOpen)}
+                onMouseEnter={() => {
+                  setCartDropdownOpen(true);
+                  setNotifDropdownOpen(false);
+                  setAvatarDropdownOpen(false);
+                  setMenuDropdownOpen(false);
+                }}
+                className="icon__cart"
+              />
             </Badge>
-            <Link className="navbar__link--item" to="">
-              SignUp
-            </Link>
-            <Link className="navbar__link--item" to="">
-              Login
-            </Link>
+            <Badge
+              onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
+              onMouseEnter={() => {
+                setNotifDropdownOpen(true);
+                setCartDropdownOpen(false);
+                setAvatarDropdownOpen(false);
+                setMenuDropdownOpen(false);
+              }}
+              badgeContent={0}
+              color="error"
+              className="icon__badge"
+            >
+              <IoMdNotifications
+                onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
+                onMouseEnter={() => {
+                  setNotifDropdownOpen(true);
+                  setCartDropdownOpen(false);
+                  setAvatarDropdownOpen(false);
+                  setMenuDropdownOpen(false);
+                }}
+                className="icon__notif"
+              />
+            </Badge>
+            <FaUserAlt
+              onClick={() => setAvatarDropdownOpen(!avatarDropdownOpen)}
+              onMouseEnter={() => {
+                setAvatarDropdownOpen(true);
+                setCartDropdownOpen(false);
+                setNotifDropdownOpen(false);
+                setMenuDropdownOpen(false);
+              }}
+              className="icon__user"
+            />
+            <AiFillSetting
+              onClick={() => setMenuDropdownOpen(!menuDropdownOpen)}
+              onMouseEnter={() => {
+                setMenuDropdownOpen(true);
+                setCartDropdownOpen(false);
+                setNotifDropdownOpen(false);
+                setAvatarDropdownOpen(false);
+              }}
+              className="icon__setting"
+            />
           </div>
         </div>
         {cartDropdownOpen && (
-          <div className="navbar__cart--dropdown">
-            {cartItems.length > 0 ? (
-              cartItems.map((item) => {
-                const { _id, ImageUrl, ProductName, SalePrice, Qty } = item;
+          <div
+            onMouseLeave={() => setCartDropdownOpen(false)}
+            className="navbar__cart"
+          >
+            <div className="navbar__cart--dropdown">
+              {cartItems.length > 0 ? (
+                cartItems.map((item) => {
+                  const { _id, ImageUrl, ProductName, SalePrice, Qty } = item;
 
-                return (
-                  <div key={_id} className="navbar__cart--items">
-                    <img
-                      src={ImageUrl}
-                      alt={`Image of ${ProductName}`}
-                      className="navbar__cart--img"
-                    />
-                    <span className="navbar__cart--price">
-                      Rp. {Intl.NumberFormat('en-US').format(SalePrice)}
-                    </span>
-                    x<span>{Qty}</span>
-                    <span>{ProductName}</span>
-                  </div>
-                );
-              })
-            ) : (
-              <p>Empty Items</p>
-            )}
+                  return (
+                    <div key={_id} className="navbar__cart--items">
+                      <img
+                        src={ImageUrl}
+                        alt={`Image of ${ProductName}`}
+                        className="navbar__cart--img"
+                      />
+                      <span className="navbar__cart--price">
+                        Rp. {Intl.NumberFormat('en-US').format(SalePrice)}
+                      </span>
+                      x<span>{Qty}</span>
+                      <span>{ProductName}</span>
+                    </div>
+                  );
+                })
+              ) : (
+                <p>Empty Items</p>
+              )}
+            </div>
             {cartItems.length > 0 && (
               <Link
                 onClick={() => setCartDropdownOpen(false)}
@@ -189,6 +256,95 @@ const Navbar = () => {
                 Checkout
               </Link>
             )}
+          </div>
+        )}
+
+        {notifDropdownOpen && (
+          <div
+            onMouseLeave={() => setNotifDropdownOpen(false)}
+            className="navbar__notif"
+          >
+            <div className="navbar__notif--dropdown"></div>
+          </div>
+        )}
+
+        {avatarDropdownOpen && (
+          <div
+            onMouseLeave={() => setAvatarDropdownOpen(false)}
+            className="navbar__user"
+          >
+            <div className="navbar__user--dropdown">
+              <div>
+                <RxAvatar className="icon__avatar" />
+                <p>{curUserName}</p>
+              </div>
+              <Link
+                onClick={() => setAvatarDropdownOpen(false)}
+                className="navbar__user--item"
+                to=""
+              >
+                Change Password
+              </Link>
+              <Link
+                onClick={() => setAvatarDropdownOpen(false)}
+                className="navbar__user--item"
+                to=""
+              >
+                Sign Up
+              </Link>
+              <Link
+                onClick={() => setAvatarDropdownOpen(false)}
+                className="navbar__user--item"
+                to=""
+              >
+                Login
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {menuDropdownOpen && (
+          <div
+            onMouseLeave={() => setMenuDropdownOpen(false)}
+            className="navbar__menu"
+          >
+            <div className="navbar__menu--dropdown">
+              <Link
+                onClick={() => setMenuDropdownOpen(false)}
+                to="/product/list"
+                className="navbar__menu--item"
+              >
+                <p>Manage Products</p>
+              </Link>
+              <Link
+                onClick={() => setMenuDropdownOpen(false)}
+                to="/product/add"
+                className="navbar__menu--item"
+              >
+                <p>Add Product</p>
+              </Link>
+              <Link
+                onClick={() => setMenuDropdownOpen(false)}
+                to=""
+                className="navbar__menu--item"
+              >
+                <p>Stock</p>
+              </Link>
+              <Link
+                onClick={() => setMenuDropdownOpen(false)}
+                to=""
+                className="navbar__menu--item"
+              >
+                <p>Discount</p>
+              </Link>
+              <Link
+                onClick={() => setMenuDropdownOpen(false)}
+                to="/settings"
+                className="navbar__menu--item"
+              >
+                <p>Settings</p>
+              </Link>
+            </div>
           </div>
         )}
       </div>
