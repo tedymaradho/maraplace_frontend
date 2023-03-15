@@ -8,11 +8,20 @@
   &__box {
     display: flex;
     gap: 3rem;
+
+    @include respond(phone) {
+      flex-direction: column;
+    }
   }
 
   &--left {
     display: flex;
     gap: 1rem;
+
+    @include respond(phone) {
+      display: grid;
+      grid-template-columns: 1fr auto;
+    }
   }
 
   &__img {
@@ -20,6 +29,10 @@
     height: fit-content;
     object-fit: cover;
     border-radius: 10px;
+
+    @include respond(phone) {
+      width: 100%;
+    }
   }
 
   &__img--slider-box {

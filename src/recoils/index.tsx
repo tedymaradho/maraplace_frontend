@@ -3,11 +3,11 @@ import { atom } from 'recoil';
 export const currentUserAtom = atom({
   key: 'currentUserAtom',
   default: {
-    curUserId: 'U01',
-    curUserName: 'Tedy Maradho Pasa',
-    curUserAddress:
+    curUsername: 'U01',
+    curFullname: 'Tedy Maradho Pasa',
+    curAddress:
       'Bungurasih dalama 24 RT.002 RW.003 Bungurasih, Waru, Sidoarjo, 61256.',
-    curUserPhone: '085234782302',
+    curPhone: '085234782302',
   },
 });
 

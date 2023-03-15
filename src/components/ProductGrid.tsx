@@ -18,7 +18,7 @@ interface IProps {
 }
 
 const ProductGrid: FC<IProps> = (props) => {
-  const { curUserId } = useRecoilValue(currentUserAtom);
+  const { curUsername } = useRecoilValue(currentUserAtom);
   const setSumQty = useSetRecoilState(sumQtyAtom);
   const setSumSubTotal = useSetRecoilState(sumSubTotalAtom);
   const navigate = useNavigate();
@@ -29,12 +29,12 @@ const ProductGrid: FC<IProps> = (props) => {
   const salePriceFormat = new Intl.NumberFormat('en-US').format(SalePrice);
 
   const addToCartHandler = async () => {
-    if (curUserId) {
+    if (curUsername) {
       try {
         const resFind = await axios.get(
           `${
             import.meta.env.VITE_BACKEND_URL
-          }/api/cart?IdUser=${curUserId}&IdProduct=${IdProduct}`
+          }/api/cart?IdUser=${curUsername}&IdProduct=${IdProduct}`
         );
 
         if (resFind.data.data.cartItems.length > 0) {
@@ -51,7 +51,7 @@ const ProductGrid: FC<IProps> = (props) => {
           );
         } else {
           await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
-            IdUser: curUserId,
+            IdUser: curUsername,
             IdProduct,
             ImageUrl: ImageUrl[0],
             ProductName,
@@ -64,7 +64,7 @@ const ProductGrid: FC<IProps> = (props) => {
         }
 
         const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUserId}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUsername}`
         );
 
         if (res.data.data.length > 0) {

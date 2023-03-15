@@ -82,12 +82,27 @@
 
   &__link {
     display: flex;
-    align-items: center;
-    gap: 2.5rem;
+    align-items: flex-end;
+    gap: 3rem;
 
     @include respond(phone) {
       width: 100%;
       justify-content: space-evenly;
+    }
+
+    &--box {
+      font-size: 1.2rem;
+      display: grid;
+      grid-template-rows: 3rem 1fr;
+      align-items: center;
+      justify-items: center;
+      text-decoration: none;
+      color: #555;
+      cursor: pointer;
+
+      &:hover {
+        color: #000;
+      }
     }
   }
 
@@ -95,7 +110,7 @@
     width: 37rem;
     min-height: 10rem;
     position: fixed;
-    top: 5rem;
+    top: 6rem;
     right: 1rem;
     border-radius: 6px;
     z-index: 9;
@@ -121,7 +136,7 @@
       z-index: 8;
       position: absolute;
       top: -1rem;
-      left: 49%;
+      left: 42%;
 
       @include respond(phone) {
         display: none;
@@ -149,7 +164,7 @@
       z-index: 7;
       position: absolute;
       top: -1rem;
-      left: 49%;
+      left: 42%;
 
       @include respond(phone) {
         display: none;
@@ -196,7 +211,7 @@
     width: 25rem;
     min-height: 15rem;
     position: fixed;
-    top: 5rem;
+    top: 6rem;
     right: 1rem;
     border-radius: 6px;
     z-index: 9;
@@ -222,7 +237,7 @@
       z-index: 8;
       position: absolute;
       top: -1rem;
-      left: 43.5%;
+      left: 34%;
 
       @include respond(phone) {
         display: none;
@@ -244,7 +259,7 @@
         z-index: 7;
         position: absolute;
         top: -1rem;
-        left: 43.5%;
+        left: 34%;
 
         @include respond(phone) {
           display: none;
@@ -267,7 +282,7 @@
     width: 24rem;
     height: 29rem;
     position: fixed;
-    top: 5rem;
+    top: 6rem;
     right: 0;
     border-radius: 6px;
     z-index: 9;
@@ -293,7 +308,7 @@
       z-index: 8;
       position: absolute;
       top: -1rem;
-      left: 57%;
+      left: 48%;
 
       @include respond(phone) {
         display: none;
@@ -315,7 +330,7 @@
         z-index: 7;
         position: absolute;
         top: -1rem;
-        left: 57%;
+        left: 48%;
 
         @include respond(phone) {
           display: none;
@@ -342,11 +357,11 @@
     }
   }
 
-  &__menu {
+  &__setting {
     width: 25rem;
     height: 26rem;
     position: fixed;
-    top: 5rem;
+    top: 6rem;
     right: 0;
     border-radius: 6px;
     z-index: 9;
@@ -372,7 +387,7 @@
       z-index: 8;
       position: absolute;
       top: -1rem;
-      left: 77%;
+      left: 74%;
 
       @include respond(phone) {
         display: none;
@@ -395,7 +410,7 @@
         z-index: 7;
         position: absolute;
         top: -1rem;
-        left: 77%;
+        left: 74%;
 
         @include respond(phone) {
           display: none;

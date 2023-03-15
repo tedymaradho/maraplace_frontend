@@ -22,10 +22,11 @@ const Navbar = () => {
   const [cartDropdownOpen, setCartDropdownOpen] = useState<boolean>(false);
   const [notifDropdownOpen, setNotifDropdownOpen] = useState<boolean>(false);
   const [avatarDropdownOpen, setAvatarDropdownOpen] = useState<boolean>(false);
-  const [menuDropdownOpen, setMenuDropdownOpen] = useState<boolean>(false);
+  const [settingDropdownOpen, setSettingDropdownOpen] =
+    useState<boolean>(false);
   const [sumQty, setSumQty] = useRecoilState(sumQtyAtom);
   const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
-  const { curUserId, curUserName } = useRecoilValue(currentUserAtom);
+  const { curUsername, curFullname } = useRecoilValue(currentUserAtom);
   const setSumSubTotal = useSetRecoilState(sumSubTotalAtom);
 
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ const Navbar = () => {
     const fetchDataCart = async () => {
       try {
         const resCount = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUserId}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUsername}`
         );
         if (resCount.data.data.length > 0) {
           setSumQty(resCount.data.data[0].sumQty);
@@ -70,7 +71,7 @@ const Navbar = () => {
         }
 
         const resItems = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/cart?IdUser=${curUserId}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/cart?IdUser=${curUsername}`
         );
 
         resItems.data.results > 0 && setCartItems(resItems.data.data.cartItems);
@@ -147,75 +148,79 @@ const Navbar = () => {
           </div>
 
           <div className="navbar__link">
-            <Link to="/">
+            <Link
+              onClick={() => {
+                setSearchText('');
+                setCategoryMany([]);
+              }}
+              to="/"
+              className="navbar__link--box"
+            >
               <AiFillHome className="icon__home" />
+              Home
             </Link>
-            <Badge
+            <div
               onClick={() => setCartDropdownOpen(!cartDropdownOpen)}
               onMouseEnter={() => {
                 setCartDropdownOpen(true);
                 setNotifDropdownOpen(false);
                 setAvatarDropdownOpen(false);
-                setMenuDropdownOpen(false);
+                setSettingDropdownOpen(false);
               }}
-              badgeContent={sumQty}
-              color="error"
-              className="icon__badge"
+              className="navbar__link--box"
             >
-              <FaShoppingCart
-                onClick={() => setCartDropdownOpen(!cartDropdownOpen)}
-                onMouseEnter={() => {
-                  setCartDropdownOpen(true);
-                  setNotifDropdownOpen(false);
-                  setAvatarDropdownOpen(false);
-                  setMenuDropdownOpen(false);
-                }}
-                className="icon__cart"
-              />
-            </Badge>
-            <Badge
+              <Badge
+                badgeContent={sumQty}
+                color="error"
+                className="icon__badge"
+              >
+                <FaShoppingCart className="icon__cart" />
+              </Badge>
+              Cart
+            </div>
+            <div
               onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
               onMouseEnter={() => {
                 setNotifDropdownOpen(true);
                 setCartDropdownOpen(false);
                 setAvatarDropdownOpen(false);
-                setMenuDropdownOpen(false);
+                setSettingDropdownOpen(false);
               }}
-              badgeContent={0}
-              color="error"
-              className="icon__badge"
+              className="navbar__link--box"
             >
-              <IoMdNotifications
-                onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
-                onMouseEnter={() => {
-                  setNotifDropdownOpen(true);
-                  setCartDropdownOpen(false);
-                  setAvatarDropdownOpen(false);
-                  setMenuDropdownOpen(false);
-                }}
-                className="icon__notif"
-              />
-            </Badge>
-            <FaUserAlt
+              <Badge badgeContent={0} color="error" className="icon__badge">
+                <IoMdNotifications className="icon__notif" />
+              </Badge>
+              Notif
+            </div>
+
+            <div
               onClick={() => setAvatarDropdownOpen(!avatarDropdownOpen)}
               onMouseEnter={() => {
                 setAvatarDropdownOpen(true);
                 setCartDropdownOpen(false);
                 setNotifDropdownOpen(false);
-                setMenuDropdownOpen(false);
+                setSettingDropdownOpen(false);
               }}
-              className="icon__user"
-            />
-            <AiFillSetting
-              onClick={() => setMenuDropdownOpen(!menuDropdownOpen)}
+              className="navbar__link--box"
+            >
+              <FaUserAlt className="icon__user" />
+              User
+            </div>
+
+            <div
+              onClick={() => setSettingDropdownOpen(!settingDropdownOpen)}
               onMouseEnter={() => {
-                setMenuDropdownOpen(true);
+                setSettingDropdownOpen(true);
                 setCartDropdownOpen(false);
                 setNotifDropdownOpen(false);
                 setAvatarDropdownOpen(false);
               }}
-              className="icon__setting"
-            />
+              className="navbar__link--box"
+            >
+              <AiFillSetting className="icon__setting" />
+              Setting
+            </div>
           </div>
         </div>
         {cartDropdownOpen && (
@@ -276,7 +281,7 @@ const Navbar = () => {
             <div className="navbar__user--dropdown">
               <div>
                 <RxAvatar className="icon__avatar" />
-                <p>{curUserName}</p>
+                <p>{curFullname}</p>
               </div>
               <Link
                 onClick={() => setAvatarDropdownOpen(false)}
@@ -303,44 +308,44 @@ const Navbar = () => {
           </div>
         )}
 
-        {menuDropdownOpen && (
+        {settingDropdownOpen && (
           <div
-            onMouseLeave={() => setMenuDropdownOpen(false)}
-            className="navbar__menu"
+            onMouseLeave={() => setSettingDropdownOpen(false)}
+            className="navbar__setting"
           >
-            <div className="navbar__menu--dropdown">
+            <div className="navbar__setting--dropdown">
               <Link
-                onClick={() => setMenuDropdownOpen(false)}
+                onClick={() => setSettingDropdownOpen(false)}
                 to="/product/list"
-                className="navbar__menu--item"
+                className="navbar__setting--item"
               >
                 <p>Manage Products</p>
               </Link>
               <Link
-                onClick={() => setMenuDropdownOpen(false)}
+                onClick={() => setSettingDropdownOpen(false)}
                 to="/product/add"
-                className="navbar__menu--item"
+                className="navbar__setting--item"
               >
                 <p>Add Product</p>
               </Link>
               <Link
-                onClick={() => setMenuDropdownOpen(false)}
+                onClick={() => setSettingDropdownOpen(false)}
                 to=""
-                className="navbar__menu--item"
+                className="navbar__setting--item"
               >
                 <p>Stock</p>
               </Link>
               <Link
-                onClick={() => setMenuDropdownOpen(false)}
+                onClick={() => setSettingDropdownOpen(false)}
                 to=""
-                className="navbar__menu--item"
+                className="navbar__setting--item"
               >
                 <p>Discount</p>
               </Link>
               <Link
-                onClick={() => setMenuDropdownOpen(false)}
+                onClick={() => setSettingDropdownOpen(false)}
                 to="/settings"
-                className="navbar__menu--item"
+                className="navbar__setting--item"
               >
                 <p>Settings</p>
               </Link>

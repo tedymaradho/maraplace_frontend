@@ -48,7 +48,7 @@ const DetailsProduct = () => {
   const [imageIndex, setImageIndex] = useState(0);
   const [qtyState, setQtyState] = useState(1);
   const cartItems = useRecoilValue(cartItemsAtom);
-  const { curUserId } = useRecoilValue(currentUserAtom);
+  const { curUsername } = useRecoilValue(currentUserAtom);
   const setSumQty = useSetRecoilState(sumQtyAtom);
   const setSumSubTotal = useSetRecoilState(sumSubTotalAtom);
 
@@ -89,7 +89,7 @@ const DetailsProduct = () => {
   }, []);
 
   const addToCartHandler = async () => {
-    if (curUserId) {
+    if (curUsername) {
       const findItem = cartItems.filter(
         ({ IdProduct }) => IdProduct === params.idproduct
       );
@@ -105,7 +105,7 @@ const DetailsProduct = () => {
         );
       } else {
         await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
-          IdUser: curUserId,
+          IdUser: curUsername,
           IdProduct,
           ImageUrl: ImageUrl[0],
           ProductName,
@@ -118,7 +118,7 @@ const DetailsProduct = () => {
       }
 
       const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUserId}`
+        `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUsername}`
       );
 
       if (res.data.data.length > 0) {

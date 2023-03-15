@@ -18,7 +18,7 @@ const Checkout = () => {
   const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
   const sumQty = useRecoilValue(sumQtyAtom);
   const sumSubTotal = useRecoilValue(sumSubTotalAtom);
-  const { curUserId, curUserName, curUserAddress, curUserPhone } =
+  const { curUsername, curFullname, curAddress, curPhone } =
     useRecoilValue(currentUserAtom);
   const setSumQty = useSetRecoilState(sumQtyAtom);
   const setSumSubTotal = useSetRecoilState(sumSubTotalAtom);
@@ -56,7 +56,7 @@ const Checkout = () => {
   }, []);
 
   const patchToCart = async (id: object, qty: number, salePrice: number) => {
-    if (curUserId) {
+    if (curUsername) {
       try {
         const resStock = await axios.patch(
           `${import.meta.env.VITE_BACKEND_URL}/api/cart/${id}`,
@@ -71,7 +71,7 @@ const Checkout = () => {
         }
 
         const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUserId}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUsername}`
         );
 
         if (res.data.data.length > 0) {
@@ -129,7 +129,7 @@ const Checkout = () => {
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/cart/${id}`);
 
       const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUserId}`
+        `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUsername}`
       );
 
       if (res.data.data.length > 0) {
@@ -255,7 +255,7 @@ const Checkout = () => {
           Shipping Address
           <textarea
             className="checkout__address--textarea"
-            value={curUserAddress}
+            value={curAddress}
             onChange={() => {}}
           />
         </label>
@@ -264,7 +264,7 @@ const Checkout = () => {
           <input
             className="checkout__address--input"
             type="text"
-            value={curUserName}
+            value={curFullname}
             onChange={() => {}}
           />
         </label>
@@ -273,7 +273,7 @@ const Checkout = () => {
           <input
             className="checkout__address--input"
             type="text"
-            value={curUserPhone}
+            value={curPhone}
             onChange={() => {}}
           />
         </label>
