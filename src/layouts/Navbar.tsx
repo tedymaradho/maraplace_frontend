@@ -150,6 +150,10 @@ const Navbar = () => {
           <div className="navbar__link">
             <Link
               onClick={() => {
+                setCartDropdownOpen(false);
+                setNotifDropdownOpen(false);
+                setAvatarDropdownOpen(false);
+                setSettingDropdownOpen(false);
                 setSearchText('');
                 setCategoryMany([]);
               }}
@@ -293,14 +297,14 @@ const Navbar = () => {
               <Link
                 onClick={() => setAvatarDropdownOpen(false)}
                 className="navbar__user--item"
-                to=""
+                to="/signup"
               >
                 Sign Up
               </Link>
               <Link
                 onClick={() => setAvatarDropdownOpen(false)}
                 className="navbar__user--item"
-                to=""
+                to="/login"
               >
                 Login
               </Link>
