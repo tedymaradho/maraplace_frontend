@@ -1,9 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { loginAxios } from '../axios/authAxios';
+
 const Login = () => {
+  const [uname, setUname] = useState('');
+  const [pass, setPass] = useState('');
+
+  const unameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUname(e.target.value);
+  };
+
+  const passChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPass(e.target.value);
+  };
+
   const loginHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    if (uname) {
+      if (pass) {
+        loginAxios(uname, pass);
+      } else {
+        throw new Error('Pasword tidak boleh kosong');
+      }
+    } else {
+      throw new Error('Username tidak boleh kosong');
+    }
   };
 
   return (
@@ -25,12 +48,16 @@ const Login = () => {
             type="text"
             name="username"
             placeholder="Username / Email"
+            value={uname}
+            onChange={unameChangeHandler}
           />
           <input
             className="login__form--password"
             type="password"
             name="password"
             placeholder="Password"
+            value={pass}
+            onChange={passChangeHandler}
           />
           <button
             onClick={loginHandler}
