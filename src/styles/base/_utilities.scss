@@ -4,7 +4,7 @@
   }
 
   &__home {
-    font-size: 2.4rem;
+    font-size: 2.3rem;
     color: #555;
     cursor: pointer;
 
@@ -14,7 +14,7 @@
   }
 
   &__cart {
-    font-size: 2.35rem;
+    font-size: 2.1rem;
     color: #555;
     cursor: pointer;
 
@@ -24,7 +24,7 @@
   }
 
   &__notif {
-    font-size: 2.6rem;
+    font-size: 2.5rem;
     color: #555;
     cursor: pointer;
 
@@ -34,7 +34,7 @@
   }
 
   &__user {
-    font-size: 2rem;
+    font-size: 1.9rem;
     color: #555;
     cursor: pointer;
 
@@ -44,7 +44,7 @@
   }
 
   &__setting {
-    font-size: 2.4rem;
+    font-size: 2.3rem;
     color: #555;
     cursor: pointer;
 
@@ -118,4 +118,9 @@
   &__sass {
     font-size: 1.8rem;
   }
+}
+
+.error__message {
+  font-size: 1.5rem;
+  color: red;
 }

@@ -40,13 +40,13 @@
   }
 
   &--invert {
-    border: 1px solid lightgray;
+    border: 1px solid rgba($color-primary-light, 0.5);
+    color: $color-primary;
     background-color: white;
-    color: $color-primary-dark;
 
     &:hover {
-      background: linear-gradient(to bottom, $color-primary-light, $color-text);
-      color: white;
+      border: 1px solid $color-primary;
+      color: $color-primary-dark;
     }
   }
 }

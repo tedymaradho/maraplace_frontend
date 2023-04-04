@@ -1,40 +1,48 @@
 import { FC } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { currentUserAtom, sumQtyAtom, sumSubTotalAtom } from '../recoils';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
 import axios from 'axios';
 import { FaShoppingCart } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { addToCart } from '../redux/cartSlice';
 
 interface IProps {
   product: {
-    IdProduct: string;
-    ImageUrl: string[];
-    ProductName: string;
-    Price: number;
-    Disc: number;
-    SalePrice: number;
-    Category: string;
+    id_product: string;
+    image_url: string[];
+    product_name: string;
+    price: number;
+    disc: number;
+    sale_price: number;
+    category: string;
   };
 }
 
 const ProductGrid: FC<IProps> = (props) => {
-  const { curUsername } = useRecoilValue(currentUserAtom);
-  const setSumQty = useSetRecoilState(sumQtyAtom);
-  const setSumSubTotal = useSetRecoilState(sumSubTotalAtom);
+  const { email } = useSelector((state: any) => state.currentUser);
+  const { products } = useSelector((state: any) => state.cart);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const { IdProduct, ImageUrl, ProductName, Price, Disc, SalePrice, Category } =
-    props.product;
-  const priceFormat = new Intl.NumberFormat('en-US').format(Price);
-  const salePriceFormat = new Intl.NumberFormat('en-US').format(SalePrice);
+  const {
+    id_product,
+    image_url,
+    product_name,
+    price,
+    disc,
+    sale_price,
+    category,
+  } = props.product;
+  const priceFormat = new Intl.NumberFormat('en-US').format(price);
+  const salePriceFormat = new Intl.NumberFormat('en-US').format(sale_price);
 
   const addToCartHandler = async () => {
-    if (curUsername) {
+    if (email) {
       try {
         const resFind = await axios.get(
           `${
             import.meta.env.VITE_BACKEND_URL
-          }/api/cart?IdUser=${curUsername}&IdProduct=${IdProduct}`
+          }/api/cart?email=${email}&id_product=${id_product}`
         );
 
         if (resFind.data.data.cartItems.length > 0) {
@@ -43,33 +51,38 @@ const ProductGrid: FC<IProps> = (props) => {
               resFind.data.data.cartItems[0]._id
             }`,
             {
-              Qty: resFind.data.data.cartItems[0].Qty + 1,
-              SubTotal:
-                resFind.data.data.cartItems[0].SalePrice *
-                (resFind.data.data.cartItems[0].Qty + 1),
+              qty: resFind.data.data.cartItems[0].qty + 1,
+              sub_total:
+                resFind.data.data.cartItems[0].sale_price *
+                (resFind.data.data.cartItems[0].qty + 1),
             }
           );
         } else {
           await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
-            IdUser: curUsername,
-            IdProduct,
-            ImageUrl: ImageUrl[0],
-            ProductName,
-            Price,
-            Disc,
-            Qty: 1,
-            SalePrice,
-            SubTotal: SalePrice,
+            email: email,
+            id_product,
+            image_url: image_url[0],
+            product_name,
+            price,
+            disc,
+            qty: 1,
+            sale_price,
+            sub_total: sale_price,
           });
         }
 
         const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUsername}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${email}`
         );
 
         if (res.data.data.length > 0) {
-          setSumQty(res.data.data[0].sumQty);
-          setSumSubTotal(res.data.data[0].sumSubTotal);
+          dispatch(
+            addToCart({
+              ...products,
+              quantity: res.data.data[0].sumQty,
+              total: res.data.data[0].sumSubTotal,
+            })
+          );
         }
       } catch (error) {
         console.error(error);
@@ -81,10 +94,13 @@ const ProductGrid: FC<IProps> = (props) => {
 
   return (
     <div className="product-grid">
-      <Link to={`/${Category}/${IdProduct}`} className="product-grid__img--box">
+      <Link
+        to={`/${category}/${id_product}`}
+        className="product-grid__img--box"
+      >
         <img
-          src={ImageUrl[0]}
-          alt={`Image of ${ProductName}`}
+          src={image_url[0]}
+          alt={`Image of ${product_name}`}
           className="product-grid__img"
         />
       </Link>
@@ -92,16 +108,16 @@ const ProductGrid: FC<IProps> = (props) => {
       <div className="product-grid__item--box">
         <div>
           <Link
-            to={`/${Category}/${IdProduct}`}
+            to={`/${category}/${id_product}`}
             className="product-grid__title"
           >
-            {ProductName}
+            {product_name}
           </Link>
 
-          {Disc > 0 && (
+          {disc > 0 && (
             <div className="product-grid__disc--box">
               <p className="product-grid__price-before">Rp. {priceFormat}</p>
-              <p className="product-grid__disc">{Disc}% off</p>
+              <p className="product-grid__disc">{disc}% off</p>
             </div>
           )}
           <p className="product-grid__price">Rp. {salePriceFormat}</p>

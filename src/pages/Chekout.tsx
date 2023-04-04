@@ -1,86 +1,110 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import {
-  cartItemsAtom,
-  currentUserAtom,
-  sumQtyAtom,
-  sumSubTotalAtom,
-} from '../recoils';
 import {
   AiFillMinusSquare,
   AiFillPlusSquare,
   AiOutlineClose,
 } from 'react-icons/ai';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { addToCart, clearCart } from '../redux/cartSlice';
 
 const Checkout = () => {
-  const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
-  const sumQty = useRecoilValue(sumQtyAtom);
-  const sumSubTotal = useRecoilValue(sumSubTotalAtom);
-  const { curUsername, curFullname, curAddress, curPhone } =
-    useRecoilValue(currentUserAtom);
-  const setSumQty = useSetRecoilState(sumQtyAtom);
-  const setSumSubTotal = useSetRecoilState(sumSubTotalAtom);
+  const { products, quantity, total } = useSelector((state: any) => state.cart);
+  const { email, token } = useSelector((state: any) => state.currentUser);
   const [productCart, setProductCart] = useState<[]>([]);
+  const [user, setUser] = useState({
+    name: '',
+    address: '',
+    phone: '',
+  });
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStock = async () => {
-      let IdProd: [] = [];
+      let IdProd: any[] = [];
       let IdProdString = '';
 
-      cartItems.map(({ IdProduct }) => {
-        IdProd.push(IdProduct);
-      });
+      products &&
+        products.map((item: any): void => {
+          IdProd.push(item.id_product);
+        });
 
       if (IdProd.length > 0) {
-        IdProdString = IdProd.toString().replaceAll(',', '&IdProduct=');
+        IdProdString = IdProd.toString().replaceAll(',', '&id_product=');
       }
 
       try {
         const resStock = await axios.get(
           `${
             import.meta.env.VITE_BACKEND_URL
-          }/api/products?IdProduct=${IdProdString}`
+          }/api/products?id_product=${IdProdString}`
         );
 
         if (resStock.data.results > 0) {
           setProductCart(resStock.data.data.products);
         }
       } catch (error) {
-        throw error;
+        console.error(error);
       }
     };
+
     fetchStock();
   }, []);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const resUser = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/users?email=${email}`,
+          { headers: { Authorization: 'B1sm1ll4h ' + token } }
+        );
+
+        if (resUser.data.status === 'success') {
+          setUser({
+            name: resUser.data.data.users[0].full_name,
+            address: resUser.data.data.users[0].address,
+            phone: resUser.data.data.users[0].phone,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   const patchToCart = async (id: object, qty: number, salePrice: number) => {
-    if (curUsername) {
+    if (email) {
       try {
         const resStock = await axios.patch(
           `${import.meta.env.VITE_BACKEND_URL}/api/cart/${id}`,
           {
-            Qty: qty,
-            SubTotal: salePrice * qty,
+            qty: qty,
+            sub_total: salePrice * qty,
           }
         );
 
-        if (resStock.data.data.cartItem.length > 0) {
-          setCartItems(resStock.data.data.cartItem);
-        }
+        if (resStock.data.status === 'success') {
+          const res = await axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${email}`
+          );
 
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUsername}`
-        );
-
-        if (res.data.data.length > 0) {
-          setSumQty(res.data.data[0].sumQty);
-          setSumSubTotal(res.data.data[0].sumSubTotal);
-        } else {
-          setSumQty(0);
-          setSumSubTotal(0);
-          navigate('/');
+          if (res.data.data.length > 0) {
+            dispatch(
+              addToCart({
+                ...products,
+                quantity: res.data.data[0].sumQty,
+                total: res.data.data[0].sumSubTotal,
+              })
+            );
+          } else {
+            dispatch(clearCart());
+            navigate('/');
+          }
         }
       } catch (error) {
         throw error;
@@ -93,12 +117,12 @@ const Checkout = () => {
   const qtyChangeHandler = (
     e: React.ChangeEvent<HTMLInputElement>,
     id: Object,
-    idproduct: string,
+    idProduct: string,
     SalePrice: number
   ) => {
-    productCart.map(({ IdProduct, Stock }) => {
-      if (IdProduct === idproduct) {
-        if (Stock >= +e.target.value) {
+    productCart.map(({ id_product, stock }) => {
+      if (id_product === idProduct) {
+        if (stock >= +e.target.value) {
           patchToCart(id, +e.target.value, SalePrice);
         }
       }
@@ -111,13 +135,13 @@ const Checkout = () => {
 
   const plusQtyHandler = async (
     id: object,
-    idproduct: string,
+    idProduct: string,
     qty: number,
     salePrice: number
   ) => {
-    productCart.map(({ IdProduct, Stock }) => {
-      if (IdProduct === idproduct) {
-        if (Stock > qty) {
+    productCart.map(({ id_product, stock }) => {
+      if (id_product === idProduct) {
+        if (stock > qty) {
           patchToCart(id, qty + 1, salePrice);
         }
       }
@@ -129,16 +153,13 @@ const Checkout = () => {
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/cart/${id}`);
 
       const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUsername}`
+        `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${email}`
       );
 
       if (res.data.data.length > 0) {
-        setSumQty(res.data.data[0].sumQty);
-        setSumSubTotal(res.data.data[0].sumSubTotal);
+        dispatch(addToCart(res.data.data[0]));
       } else {
-        setSumQty(0);
-        setSumSubTotal(0);
-        setCartItems([]);
+        dispatch(clearCart());
         navigate('/');
       }
     } catch (error) {
@@ -160,69 +181,71 @@ const Checkout = () => {
             </tr>
           </thead>
           <tbody>
-            {cartItems.length > 0 ? (
-              cartItems.map((item) => {
+            {products ? (
+              products.map((item: any) => {
                 const {
                   _id,
-                  IdProduct,
-                  ImageUrl,
-                  ProductName,
-                  Price,
-                  Disc,
-                  SalePrice,
-                  Qty,
-                  SubTotal,
+                  id_product,
+                  image_url,
+                  product_name,
+                  price,
+                  disc,
+                  sale_price,
+                  qty,
+                  sub_total,
                 } = item;
 
                 return (
                   <tr key={_id} className="checkout__cart--items">
                     <td>
                       <img
-                        src={ImageUrl}
-                        alt={`Image of ${ProductName}`}
+                        src={image_url}
+                        alt={`Image of ${product_name}`}
                         className="checkout__cart--img"
                       />
                     </td>
                     <td>
-                      <span>{ProductName}</span>
+                      <span>{product_name}</span>
                     </td>
                     <td className="checkout__price--disc">
-                      <span>{Disc > 0 && `${Disc}%`}</span>
+                      <span>{disc > 0 && `${disc}%`}</span>
                     </td>
                     <td className="checkout__price--right checkout__price--stright">
                       <span>
-                        {Disc > 0 && Intl.NumberFormat('en-US').format(Price)}
+                        {disc > 0 && Intl.NumberFormat('en-US').format(price)}
                       </span>
                     </td>
                     <td className="checkout__price--right">
                       <span>
-                        {Intl.NumberFormat('en-US').format(SalePrice)}
+                        {Intl.NumberFormat('en-US').format(sale_price)}
                       </span>
                     </td>
                     <td className="checkout__td--qty">
                       <div className="checkout__td--qty-box">
                         <AiFillMinusSquare
-                          onClick={() => minusQtyHandler(_id, Qty, SalePrice)}
+                          onClick={() => minusQtyHandler(_id, qty, sale_price)}
                           className="checkout__icon--minus"
                         />
                         <input
                           type="text"
                           className="checkout__qty--input"
-                          value={Qty}
+                          value={qty}
                           onChange={(e) =>
-                            qtyChangeHandler(e, _id, IdProduct, SalePrice)
+                            qtyChangeHandler(e, _id, id_product, sale_price)
                           }
                         />
                         <AiFillPlusSquare
                           onClick={() =>
-                            plusQtyHandler(_id, IdProduct, Qty, SalePrice)
+                            plusQtyHandler(_id, id_product, qty, sale_price)
                           }
                           className="checkout__icon--plus"
                         />
                       </div>
                     </td>
                     <td className="checkout__price--right">
-                      <span>{Intl.NumberFormat('en-US').format(SubTotal)}</span>
+                      <span>
+                        {Intl.NumberFormat('en-US').format(sub_total)}
+                      </span>
                     </td>
                     <td className="checkout__price--right">
                       <AiOutlineClose
@@ -242,9 +265,9 @@ const Checkout = () => {
           <tfoot>
             <tr className="checkout__table--foot">
               <td colSpan={5}>TOTAL</td>
-              <td className="checkout__price--center">{sumQty}</td>
+              <td className="checkout__price--center">{quantity}</td>
               <td className="checkout__price--right">
-                Rp. {Intl.NumberFormat('en-US').format(sumSubTotal)}
+                Rp. {Intl.NumberFormat('en-US').format(total)}
               </td>
             </tr>
           </tfoot>
@@ -255,8 +278,8 @@ const Checkout = () => {
           Shipping Address
           <textarea
             className="checkout__address--textarea"
-            value={curAddress}
-            onChange={() => {}}
+            value={user.address}
+            onChange={(e) => setUser({ ...user, address: e.target.value })}
           />
         </label>
         <label>
@@ -264,8 +287,8 @@ const Checkout = () => {
           <input
             className="checkout__address--input"
             type="text"
-            value={curFullname}
-            onChange={() => {}}
+            value={user.name}
+            onChange={(e) => setUser({ ...user, name: e.target.value })}
           />
         </label>
         <label>
@@ -273,8 +296,8 @@ const Checkout = () => {
           <input
             className="checkout__address--input"
             type="text"
-            value={curPhone}
-            onChange={() => {}}
+            value={user.phone}
+            onChange={(e) => setUser({ ...user, phone: e.target.value })}
           />
         </label>
         <hr className="checkout__payment--hr" />
@@ -289,7 +312,7 @@ const Checkout = () => {
         </label>
         <span className="checkout__payment--total-label">Total Tagihan</span>
         <span className="checkout__payment--total">
-          Rp. {Intl.NumberFormat('en-US').format(sumSubTotal)}
+          Rp. {Intl.NumberFormat('en-US').format(total)}
         </span>
         <button className="btn btn--lg btn--primary checkout__btn--pay">
           PAY

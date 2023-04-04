@@ -2,84 +2,79 @@ import { useEffect, useState, FC } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AiFillPlusSquare, AiFillMinusSquare } from 'react-icons/ai';
 import axios from 'axios';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import {
-  cartItemsAtom,
-  currentUserAtom,
-  sumQtyAtom,
-  sumSubTotalAtom,
-} from '../recoils';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { addToCart } from '../redux/cartSlice';
 
 interface IProduct {
-  IdProduct: string;
-  ProductName: string;
-  Merk: string;
-  Size: string;
-  Desc: string;
-  Category: string;
-  Price: number;
-  Disc: number;
-  SalePrice: number;
-  Stock: number;
-  ImageUrl: string[];
-  Sold: number;
-  Flag: string;
+  id_product: string;
+  product_name: string;
+  merk: string;
+  size: string;
+  desc: string;
+  category: string;
+  price: number;
+  disc: number;
+  sale_price: number;
+  stock: number;
+  image_url: string[];
+  sold: number;
+  flag: string;
 }
 
 const INITIAL_PRODUCT = {
-  IdProduct: '',
-  ProductName: '',
-  Merk: '',
-  Size: '',
-  Desc: '',
-  Category: '',
-  Price: 0,
-  Disc: 0,
-  SalePrice: 0,
-  Stock: 0,
-  ImageUrl: [],
-  Sold: 0,
-  Flag: '',
+  id_product: '',
+  product_name: '',
+  merk: '',
+  size: '',
+  desc: '',
+  category: '',
+  price: 0,
+  disc: 0,
+  sale_price: 0,
+  stock: 0,
+  image_url: [],
+  sold: 0,
+  flag: '',
 };
 
-const DetailsProduct = () => {
+const ProductDetails = () => {
   const params = useParams();
   const [product, setProduct] = useState<IProduct>(INITIAL_PRODUCT);
   const [imageIndex, setImageIndex] = useState(0);
   const [qtyState, setQtyState] = useState(1);
-  const cartItems = useRecoilValue(cartItemsAtom);
-  const { curUsername } = useRecoilValue(currentUserAtom);
-  const setSumQty = useSetRecoilState(sumQtyAtom);
-  const setSumSubTotal = useSetRecoilState(sumSubTotalAtom);
+  const dispatch = useDispatch();
+  const { products, quantity, total } = useSelector((state: any) => state.cart);
+  const { email } = useSelector((state: any) => state.currentUser);
 
   const navigate = useNavigate();
 
   const {
-    IdProduct,
-    ProductName,
-    Merk,
-    Size,
-    Desc,
-    Category,
-    Price,
-    Disc,
-    SalePrice,
-    Stock,
-    ImageUrl,
-    Sold,
-    Flag,
+    id_product,
+    product_name,
+    merk,
+    size,
+    desc,
+    category,
+    price,
+    disc,
+    sale_price,
+    stock,
+    image_url,
+    sold,
+    flag,
   } = product;
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const resProduct = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/products?IdProduct=${
+          `${import.meta.env.VITE_BACKEND_URL}/api/products?id_product=${
             params.idproduct
           }`
         );
-        resProduct.data.results > 0 &&
-          setProduct(resProduct.data.data.products[0]);
+        resProduct.data.status =
+          'success' && setProduct(resProduct.data.data.products[0]);
       } catch (error) {
         console.error(error);
       }
@@ -89,41 +84,40 @@ const DetailsProduct = () => {
   }, []);
 
   const addToCartHandler = async () => {
-    if (curUsername) {
-      const findItem = cartItems.filter(
-        ({ IdProduct }) => IdProduct === params.idproduct
+    if (email) {
+      const findItem = products.filter(
+        ({ id_product }: any) => id_product === params.idproduct
       );
 
       if (findItem.length > 0) {
-        const { _id, Qty, SalePrice } = findItem[0];
+        const { _id, qty, sale_price } = findItem[0];
         await axios.patch(
           `${import.meta.env.VITE_BACKEND_URL}/api/cart/${_id}`,
           {
-            Qty: Qty + qtyState,
-            SubTotal: SalePrice * (Qty + qtyState),
+            qty: qty + qtyState,
+            sub_total: sale_price * (qty + qtyState),
           }
         );
       } else {
         await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
-          IdUser: curUsername,
-          IdProduct,
-          ImageUrl: ImageUrl[0],
-          ProductName,
-          Price,
-          Disc,
-          Qty: qtyState,
-          SalePrice,
-          SubTotal: SalePrice * qtyState,
+          email: email,
+          id_product,
+          image_url: image_url[0],
+          product_name,
+          price,
+          disc,
+          qty: qtyState,
+          sale_price,
+          sub_total: sale_price * qtyState,
         });
       }
 
       const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUsername}`
+        `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${email}`
       );
 
-      if (res.data.data.length > 0) {
-        setSumQty(res.data.data[0].sumQty);
-        setSumSubTotal(res.data.data[0].sumSubTotal);
+      if (res.data.status === 'success') {
+        dispatch(addToCart(res.data.data[0]));
       }
     } else {
       navigate('/login');
@@ -138,16 +132,16 @@ const DetailsProduct = () => {
   return (
     <div className="details-product">
       <h1>
-        <div className="details-product__box" key={IdProduct}>
+        <div className="details-product__box" key={id_product}>
           <div className="details-product--left">
             <img
               className="details-product__img"
-              src={ImageUrl[imageIndex]}
-              alt={`Image of ${ProductName}`}
+              src={image_url[imageIndex]}
+              alt={`Image of ${product_name}`}
             />
             <div className="details-product__img--slider-box">
-              {ImageUrl &&
-                [...ImageUrl].map((ImgUrl, idx) => {
+              {image_url &&
+                [...image_url].map((ImgUrl, idx) => {
                   return (
                     <button
                       className="details-product__img--link"
@@ -157,7 +151,7 @@ const DetailsProduct = () => {
                       <img
                         className="details-product__img--slider"
                         src={ImgUrl}
-                        alt={`Image of ${ProductName}`}
+                        alt={`Image of ${product_name}`}
                       />
                     </button>
                   );
@@ -166,33 +160,33 @@ const DetailsProduct = () => {
           </div>
           <div className="details-product--right">
             <h1 className="heading heading__secondary details-product--title">
-              {ProductName}
+              {product_name}
             </h1>
-            {Disc > 0 ? (
+            {disc > 0 ? (
               <>
                 <div className="details-product__disc--box">
                   <p className="details-product--price-before">
-                    Rp.&nbsp;{Intl.NumberFormat('en-US').format(Price)}
+                    Rp.&nbsp;{Intl.NumberFormat('en-US').format(price)}
                   </p>
-                  <p className="details-product--disc">{Disc}% off</p>
+                  <p className="details-product--disc">{disc}% off</p>
                 </div>
                 <p className="heading heading__primary">
                   Rp.&nbsp;
-                  {Intl.NumberFormat('en-US').format(SalePrice)}
+                  {Intl.NumberFormat('en-US').format(sale_price)}
                 </p>
               </>
             ) : (
               <p className="heading heading__primary">
                 Rp.&nbsp;
-                {Intl.NumberFormat('en-US').format(Price)}
+                {Intl.NumberFormat('en-US').format(price)}
               </p>
             )}
-            <p className="details-product--item">Merk: {Merk}</p>
-            <p className="details-product--item">Size: {Size}</p>
-            <p className="details-product--item">Category: {Category}</p>
-            <p className="details-product--item">Flag: {Flag}</p>
-            <p className="details-product--item">Sold: {Sold}</p>
-            <p className="details-product--item">Stock: {Stock}</p>
+            <p className="details-product--item">Merk: {merk}</p>
+            <p className="details-product--item">Size: {size}</p>
+            <p className="details-product--item">Category: {category}</p>
+            <p className="details-product--item">Flag: {flag}</p>
+            <p className="details-product--item">Sold: {sold}</p>
+            <p className="details-product--item">Stock: {stock}</p>
             <div className="details-product__cta">
               <label className="details-product__qty--label">
                 Quantity&ensp;
@@ -206,14 +200,14 @@ const DetailsProduct = () => {
                     className="details-product__qty--input"
                     value={qtyState}
                     onChange={(e) =>
-                      +e.target.value > 0 && +e.target.value <= Stock
+                      +e.target.value > 0 && +e.target.value <= stock
                         ? setQtyState(+e.target.value)
                         : qtyState
                     }
                   />
                   <AiFillPlusSquare
                     onClick={() =>
-                      qtyState < Stock && setQtyState(qtyState + 1)
+                      qtyState < stock && setQtyState(qtyState + 1)
                     }
                     className="details-product__qty--increase"
                   />
@@ -235,7 +229,7 @@ const DetailsProduct = () => {
               </div>
             </div>
             <p className="details-product--desc">
-              {`${Desc}`.replaceAll('\\n', '\n')}
+              {`${desc}`.replaceAll('\\n', '\n')}
             </p>
           </div>
         </div>
@@ -244,4 +238,4 @@ const DetailsProduct = () => {
   );
 };
 
-export default DetailsProduct;
+export default ProductDetails;

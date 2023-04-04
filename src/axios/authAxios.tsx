@@ -5,8 +5,8 @@ export const loginAxios = async (uname: string, pass: string) => {
     const resLogin = await axios.post(
       `${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
       {
-        Email: uname,
-        Password: pass,
+        email: uname,
+        password: pass,
       }
     );
 

@@ -8,15 +8,16 @@
 
 @import './components/buttons';
 @import './components/product-grid';
+@import './components/modal';
 
 @import './layouts/footer';
 @import './layouts/header';
 @import './layouts/navbar';
 
-@import './pages/add-product';
+@import './pages/product-add';
 @import './pages/home';
-@import './pages/category-product';
-@import './pages/details-product';
+@import './pages/product-category';
+@import './pages/product-details';
 @import './pages/checkout';
 @import './pages/setting';
 @import './pages/login';

@@ -1,14 +1,16 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Navbar from './layouts/Navbar';
+
+import Navbar from './components/Navbar';
 import Home from './pages/Home';
-import CategoryProduct from './pages/CategoryProduct';
-import DetailsProduct from './pages/DetailsProduct';
+import ProductCategory from './pages/ProductCategory';
+import ProductDetails from './pages/ProductDetails';
 import Checkout from './pages/Chekout';
-import AddProduct from './pages/AddProduct';
+import ProductAdd from './pages/ProductAdd';
 import Setting from './pages/Setting';
 import ProductList from './pages/ProductList';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+
 import './styles/main.scss';
 
 function App() {
@@ -19,11 +21,11 @@ function App() {
         <Route path="signup" element={<SignUp />} />
         <Route path="/" element={<Navbar />}>
           <Route index element={<Home />} />
-          <Route path=":category" element={<CategoryProduct />} />
-          <Route path=":category/:idproduct" element={<DetailsProduct />} />
+          <Route path=":category" element={<ProductCategory />} />
+          <Route path=":category/:idproduct" element={<ProductDetails />} />
           <Route path="checkout" element={<Checkout />} />
           <Route path="product/list" element={<ProductList />} />
-          <Route path="product/add" element={<AddProduct />} />
+          <Route path="product/add" element={<ProductAdd />} />
           <Route path="settings" element={<Setting />} />
         </Route>
       </Routes>

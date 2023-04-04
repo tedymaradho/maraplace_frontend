@@ -5,16 +5,20 @@ import { FaShoppingCart, FaUserAlt } from 'react-icons/fa';
 import { IoMdNotifications } from 'react-icons/io';
 import { RxAvatar } from 'react-icons/rx';
 import { AiFillSetting, AiFillHome } from 'react-icons/ai';
-import Footer from './Footer';
-import { Select, SelectChangeEvent, MenuItem, Badge } from '@mui/material/';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
-  sumQtyAtom,
-  cartItemsAtom,
-  currentUserAtom,
-  sumSubTotalAtom,
-} from '../recoils';
+  Select,
+  SelectChangeEvent,
+  MenuItem,
+  Badge,
+  Checkbox,
+} from '@mui/material/';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+
+import Footer from './Footer';
+import { addToCart } from '../redux/cartSlice';
+import { setCurrentUser } from '../redux/userSlice';
+import Modal from './Modal';
 
 const Navbar = () => {
   const [categoryMany, setCategoryMany] = useState<string[]>([]);
@@ -24,11 +28,12 @@ const Navbar = () => {
   const [avatarDropdownOpen, setAvatarDropdownOpen] = useState<boolean>(false);
   const [settingDropdownOpen, setSettingDropdownOpen] =
     useState<boolean>(false);
-  const [sumQty, setSumQty] = useRecoilState(sumQtyAtom);
-  const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
-  const { curUsername, curFullname } = useRecoilValue(currentUserAtom);
-  const setSumSubTotal = useSetRecoilState(sumSubTotalAtom);
-
+  const { products, quantity } = useSelector((state: any) => state.cart);
+  const { email } = useSelector((state: any) => state.currentUser);
+  const { msgShow, msgTitle, msgContent, msgBtnContent } = useSelector(
+    (state: any) => state.msg
+  );
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const options = [
@@ -44,8 +49,20 @@ const Navbar = () => {
   ];
 
   useEffect(() => {
+    if (localStorage.getItem('userData') && !email) {
+      const userData = JSON.parse(localStorage.getItem('userData') || '');
+
+      if (userData.token) {
+        dispatch(
+          setCurrentUser({ email: userData.email, token: userData.token })
+        );
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     if (categoryMany.length > 0) {
-      navigate(`Category=${categoryMany}`);
+      navigate(`category=${categoryMany}`);
     } else {
       navigate('/');
     }
@@ -53,7 +70,7 @@ const Navbar = () => {
 
   useEffect(() => {
     if (searchText.length > 0) {
-      navigate(`ProductName[regex]=${searchText}options`);
+      navigate(`product_name[regex]=${searchText}options`);
     } else {
       navigate('/');
     }
@@ -63,25 +80,34 @@ const Navbar = () => {
     const fetchDataCart = async () => {
       try {
         const resCount = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${curUsername}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/cart/stats/${email}`
         );
-        if (resCount.data.data.length > 0) {
-          setSumQty(resCount.data.data[0].sumQty);
-          setSumSubTotal(resCount.data.data[0].sumSubTotal);
+
+        if (resCount.data.status === 'success') {
+          const resItems = await axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/api/cart?email=${email}`
+          );
+
+          if (
+            resItems.data.status === 'success' &&
+            resItems.data.data.cartItems.length > 0
+          ) {
+            dispatch(
+              addToCart({
+                products: resItems.data.data.cartItems,
+                quantity: resCount.data.data[0].sumQty,
+                total: resCount.data.data[0].sumSubTotal,
+              })
+            );
+          }
         }
-
-        const resItems = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/cart?IdUser=${curUsername}`
-        );
-
-        resItems.data.results > 0 && setCartItems(resItems.data.data.cartItems);
       } catch (error) {
         console.error(error);
       }
     };
 
-    fetchDataCart();
-  }, [sumQty]);
+    email && fetchDataCart();
+  }, [quantity, email]);
 
   const categoryChangeHandler = (
     event: SelectChangeEvent<typeof categoryMany>
@@ -99,6 +125,13 @@ const Navbar = () => {
 
   return (
     <>
+      {msgShow && (
+        <Modal
+          title={msgTitle}
+          content={msgContent}
+          btnContent={msgBtnContent}
+        />
+      )}
       <div className="navbar__container">
         <div className="navbar">
           <Link to="/" className="navbar__logo--box">
@@ -141,6 +174,7 @@ const Navbar = () => {
                   key={opt.value}
                   value={opt.value}
                 >
+                  <Checkbox checked={categoryMany.indexOf(opt.value) > -1} />
                   {opt.label}
                 </MenuItem>
               ))}
@@ -174,7 +208,7 @@ const Navbar = () => {
               className="navbar__link--box"
             >
               <Badge
-                badgeContent={sumQty}
+                badgeContent={quantity}
                 color="error"
                 className="icon__badge"
               >
@@ -233,22 +267,23 @@ const Navbar = () => {
             className="navbar__cart"
           >
             <div className="navbar__cart--dropdown">
-              {cartItems.length > 0 ? (
-                cartItems.map((item) => {
-                  const { _id, ImageUrl, ProductName, SalePrice, Qty } = item;
+              {products ? (
+                products.map((item: any) => {
+                  const { _id, image_url, product_name, sale_price, qty } =
+                    item;
 
                   return (
                     <div key={_id} className="navbar__cart--items">
                       <img
-                        src={ImageUrl}
-                        alt={`Image of ${ProductName}`}
+                        src={image_url}
+                        alt={`Image of ${product_name}`}
                         className="navbar__cart--img"
                       />
                       <span className="navbar__cart--price">
-                        Rp. {Intl.NumberFormat('en-US').format(SalePrice)}
+                        Rp. {Intl.NumberFormat('en-US').format(sale_price)}
                       </span>
-                      x<span>{Qty}</span>
-                      <span>{ProductName}</span>
+                      x<span>{qty}</span>
+                      <span>{product_name}</span>
                     </div>
                   );
                 })
@@ -256,7 +291,7 @@ const Navbar = () => {
                 <p>Empty Items</p>
               )}
             </div>
-            {cartItems.length > 0 && (
+            {products && (
               <Link
                 onClick={() => setCartDropdownOpen(false)}
                 to="/checkout"
@@ -273,7 +308,11 @@ const Navbar = () => {
             onMouseLeave={() => setNotifDropdownOpen(false)}
             className="navbar__notif"
           >
-            <div className="navbar__notif--dropdown"></div>
+            <div className="navbar__notif--dropdown">
+              <Link to="" className="navbar__notif--transaction">
+                My Transaction
+              </Link>
+            </div>
           </div>
         )}
 
@@ -285,29 +324,46 @@ const Navbar = () => {
             <div className="navbar__user--dropdown">
               <div>
                 <RxAvatar className="icon__avatar" />
-                <p>{curFullname}</p>
+                <p>{email}</p>
               </div>
-              <Link
-                onClick={() => setAvatarDropdownOpen(false)}
-                className="navbar__user--item"
-                to=""
-              >
-                Change Password
-              </Link>
-              <Link
-                onClick={() => setAvatarDropdownOpen(false)}
-                className="navbar__user--item"
-                to="/signup"
-              >
-                Sign Up
-              </Link>
-              <Link
-                onClick={() => setAvatarDropdownOpen(false)}
-                className="navbar__user--item"
-                to="/login"
-              >
-                Login
-              </Link>
+              {email ? (
+                <>
+                  <Link
+                    onClick={() => setAvatarDropdownOpen(false)}
+                    className="navbar__user--item"
+                    to=""
+                  >
+                    Change Password
+                  </Link>
+                  <Link
+                    onClick={() => {
+                      setAvatarDropdownOpen(false);
+                      localStorage.removeItem('userData');
+                    }}
+                    className="navbar__user--item"
+                    to="/login"
+                  >
+                    Logout
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    onClick={() => setAvatarDropdownOpen(false)}
+                    className="navbar__user--item"
+                    to="/signup"
+                  >
+                    Sign Up
+                  </Link>
+                  <Link
+                    onClick={() => setAvatarDropdownOpen(false)}
+                    className="navbar__user--item"
+                    to="/login"
+                  >
+                    Login
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}

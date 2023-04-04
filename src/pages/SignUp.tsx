@@ -1,20 +1,55 @@
+import axios from 'axios';
 import React, { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+
+import { setCurrentUser } from '../redux/userSlice';
 
 const SignUp = () => {
-  const usernameRef = useRef<HTMLInputElement>(null);
-  const fullnameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
+  const fullnameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const addressRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const signupHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-    } catch (error) {}
-    console.log(usernameRef.current?.value);
-    console.log(fullnameRef.current?.value);
+      const resSignup = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/signup`,
+        {
+          email: emailRef.current?.value,
+          full_name: fullnameRef.current?.value,
+          password: passwordRef.current?.value,
+          address: addressRef.current?.value,
+          phone: phoneRef.current?.value,
+        }
+      );
+
+      if (resSignup.data.status === 'success') {
+        await dispatch(
+          setCurrentUser({
+            email: resSignup.data.data.user.email,
+            token: resSignup.data.token,
+          })
+        );
+
+        await localStorage.setItem(
+          'userData',
+          JSON.stringify({
+            email: resSignup.data.data.user.email,
+            token: resSignup.data.token,
+          })
+        );
+
+        navigate('/');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -31,13 +66,6 @@ const SignUp = () => {
           Marashop <span>| SignUp</span>
         </h1>
         <form className="signup__form">
-          <input
-            className="signup__form--username"
-            type="text"
-            name="username"
-            placeholder="Username"
-            ref={usernameRef}
-          />
           <input
             className="signup__form--fullname"
             type="text"

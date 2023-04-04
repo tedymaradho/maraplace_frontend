@@ -19,8 +19,8 @@ const Header = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/api/settings?IdSetting=banner`)
-      .then((res) => setBannersImage(res.data.data.setting[0].Set1))
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/settings?id_setting=banner`)
+      .then((res) => setBannersImage(res.data.data.setting[0].set_1))
       .catch((err) => console.error(err));
   }, []);
 

@@ -208,18 +208,29 @@
   }
 
   &__notif {
-    width: 25rem;
+    width: 30rem;
     min-height: 15rem;
     position: fixed;
     top: 6rem;
     right: 1rem;
     border-radius: 6px;
     z-index: 9;
-    padding: 1rem;
+    padding: 1rem 0;
     font-size: 1.5rem;
     border: 1px solid lightgray;
     text-align: center;
     background-color: white;
+
+    &--transaction {
+      padding: 1rem;
+      text-decoration: none;
+      color: #333;
+      border-bottom: 1px solid lightgray;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
 
     @include respond(phone) {
       width: 90%;
@@ -237,7 +248,7 @@
       z-index: 8;
       position: absolute;
       top: -1rem;
-      left: 30%;
+      left: 41%;
 
       @include respond(phone) {
         display: none;
@@ -259,7 +270,7 @@
         z-index: 7;
         position: absolute;
         top: -1rem;
-        left: 30%;
+        left: 41%;
 
         @include respond(phone) {
           display: none;
@@ -280,13 +291,13 @@
 
   &__user {
     width: 24rem;
-    height: 29rem;
+    height: fit-content;
     position: fixed;
     top: 6rem;
     right: 0;
     border-radius: 6px;
     z-index: 9;
-    padding: 1rem;
+    padding: 1rem 1rem 3rem 1rem;
     font-size: 1.5rem;
     border: 1px solid lightgray;
     text-align: center;
@@ -359,13 +370,13 @@
 
   &__setting {
     width: 25rem;
-    height: 26rem;
+    height: fit-content;
     position: fixed;
     top: 6rem;
     right: 0;
     border-radius: 6px;
     z-index: 9;
-    padding: 1rem;
+    padding: 1rem 1rem 2.5rem 1rem;
     font-size: 1.5rem;
     border: 1px solid lightgray;
     text-align: center;

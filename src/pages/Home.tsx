@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Header from '../layouts/Header';
-import ProductGrid from '../components/ProductGrid';
 import { AiFillRightCircle } from 'react-icons/ai';
 import axios from 'axios';
+
+import ProductGrid from '../components/ProductGrid';
+import Header from '../components/Header';
 
 const Home = () => {
   const [productsNew, setProductsNew] = useState([]);
@@ -11,7 +12,7 @@ const Home = () => {
   const [productsDisc, setProductsDisc] = useState([]);
   const [productsRecom, setProductsRecom] = useState([]);
 
-  const queryLimit = 7;
+  const queryLimit = 6;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,7 +20,7 @@ const Home = () => {
         const resDisc = await axios.get(
           `${
             import.meta.env.VITE_BACKEND_URL
-          }/api/products?Disc[gt]=0&limit=${queryLimit}`
+          }/api/products?disc[gt]=0&limit=${queryLimit}`
         );
 
         resDisc.data.results > 0 && setProductsDisc(resDisc.data.data.products);
@@ -27,7 +28,7 @@ const Home = () => {
         const resNew = await axios.get(
           `${
             import.meta.env.VITE_BACKEND_URL
-          }/api/products?Flag=new&sort=-CreatedAt&limit=${queryLimit}`
+          }/api/products?flag=new&sort=-created_at&limit=${queryLimit}`
         );
 
         resNew.data.results > 0 && setProductsNew(resNew.data.data.products);
@@ -35,7 +36,7 @@ const Home = () => {
         const resSold = await axios.get(
           `${
             import.meta.env.VITE_BACKEND_URL
-          }/api/products?Sold[gt]=5&sort=-Sold&limit=${queryLimit}`
+          }/api/products?sold[gt]=5&sort=-sold&limit=${queryLimit}`
         );
 
         resSold.data.results > 0 &&
@@ -44,7 +45,7 @@ const Home = () => {
         const resRecom = await axios.get(
           `${
             import.meta.env.VITE_BACKEND_URL
-          }/api/products?Flag=recommended&sort=-CreatedAt&limit=${queryLimit}`
+          }/api/products?flag=recommended&sort=-created_at&limit=${queryLimit}`
         );
 
         resRecom.data.results > 0 &&
@@ -75,8 +76,8 @@ const Home = () => {
           <div className="home__product--box">
             {productsDisc &&
               productsDisc.map((product) => {
-                const { IdProduct } = product;
-                return <ProductGrid key={IdProduct} product={product} />;
+                const { id_product } = product;
+                return <ProductGrid key={id_product} product={product} />;
               })}
             {productsDisc.length >= queryLimit && (
               <Link to="special-discount" className="home__see--all">
@@ -99,8 +100,8 @@ const Home = () => {
           <div className="home__product--box">
             {productsNew &&
               productsNew.map((product) => {
-                const { IdProduct } = product;
-                return <ProductGrid key={IdProduct} product={product} />;
+                const { id_product } = product;
+                return <ProductGrid key={id_product} product={product} />;
               })}
             {productsNew.length >= queryLimit && (
               <Link to="new-arrivals" className="home__see--all">
@@ -123,8 +124,8 @@ const Home = () => {
           <div className="home__product--box">
             {productsMostSold &&
               productsMostSold.map((product) => {
-                const { IdProduct } = product;
-                return <ProductGrid key={IdProduct} product={product} />;
+                const { id_product } = product;
+                return <ProductGrid key={id_product} product={product} />;
               })}
             {productsMostSold.length >= queryLimit && (
               <Link to="most-sold" className="home__see--all">
@@ -147,8 +148,8 @@ const Home = () => {
           <div className="home__product--box">
             {productsRecom &&
               productsRecom.map((product) => {
-                const { IdProduct } = product;
-                return <ProductGrid key={IdProduct} product={product} />;
+                const { id_product } = product;
+                return <ProductGrid key={id_product} product={product} />;
               })}
             {productsRecom.length >= queryLimit && (
               <Link to="recommendation" className="home__see--all">

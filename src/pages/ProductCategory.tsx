@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import ProductGrid from '../components/ProductGrid';
 import axios from 'axios';
 
-const CategoryProduct = () => {
+const ProductCategory = () => {
   const [category, setCategory] = useState([]);
   const params = useParams();
 
@@ -14,10 +14,12 @@ const CategoryProduct = () => {
           .get(
             `${
               import.meta.env.VITE_BACKEND_URL
-            }/api/products?Disc[gt]=0&page=1&limit=50`
+            }/api/products?disc[gt]=0&page=1&limit=50`
           )
           .then(
-            (res) => res.data.results > 0 && setCategory(res.data.data.products)
+            (res) =>
+              res.data.status === 'success' &&
+              setCategory(res.data.data.products)
           )
           .catch((err) => console.error(err));
         break;
@@ -26,10 +28,12 @@ const CategoryProduct = () => {
           .get(
             `${
               import.meta.env.VITE_BACKEND_URL
-            }/api/products?Flag=new&sort=-CreatedAt&page=1&limit=50`
+            }/api/products?flag=new&sort=-created_at&page=1&limit=50`
           )
           .then(
-            (res) => res.data.results > 0 && setCategory(res.data.data.products)
+            (res) =>
+              res.data.status === 'success' &&
+              setCategory(res.data.data.products)
           )
           .catch((err) => console.error(err));
         break;
@@ -38,10 +42,12 @@ const CategoryProduct = () => {
           .get(
             `${
               import.meta.env.VITE_BACKEND_URL
-            }/api/products?Sold[gt]=10&sort=-Sold&page=1&limit=50`
+            }/api/products?sold[gt]=10&sort=-sold&page=1&limit=50`
           )
           .then(
-            (res) => res.data.results > 0 && setCategory(res.data.data.products)
+            (res) =>
+              res.data.status === 'success' &&
+              setCategory(res.data.data.products)
           )
           .catch((err) => console.error(err));
         break;
@@ -50,17 +56,19 @@ const CategoryProduct = () => {
           .get(
             `${
               import.meta.env.VITE_BACKEND_URL
-            }/api/products?Flag=recommended&sort=-CreatedAt&page=1&limit=50`
+            }/api/products?flag=recommended&sort=-created_at&page=1&limit=50`
           )
           .then(
-            (res) => res.data.results > 0 && setCategory(res.data.data.products)
+            (res) =>
+              res.data.status === 'success' &&
+              setCategory(res.data.data.products)
           )
           .catch((err) => console.error(err));
         break;
       default:
         if (`${params.category}`.search(/,/) > 0) {
           if (params.category) {
-            const param = `${params.category}`.replaceAll(',', '&Category=');
+            const param = `${params.category}`.replaceAll(',', '&category=');
             axios
               .get(
                 `${
@@ -69,7 +77,8 @@ const CategoryProduct = () => {
               )
               .then(
                 (res) =>
-                  res.data.results > 0 && setCategory(res.data.data.products)
+                  res.data.status === 'success' &&
+                  setCategory(res.data.data.products)
               )
               .catch((err) => console.error(err));
           }
@@ -82,7 +91,8 @@ const CategoryProduct = () => {
             )
             .then(
               (res) =>
-                res.data.results > 0 && setCategory(res.data.data.products)
+                res.data.status === 'success' &&
+                setCategory(res.data.data.products)
             )
             .catch((err) => console.error(err));
         }
@@ -104,12 +114,12 @@ const CategoryProduct = () => {
       <div className="category__product">
         {category &&
           category.map((product) => {
-            const { IdProduct } = product;
-            return <ProductGrid key={IdProduct} product={product} />;
+            const { id_product } = product;
+            return <ProductGrid key={id_product} product={product} />;
           })}
       </div>
     </div>
   );
 };
 
-export default CategoryProduct;
+export default ProductCategory;

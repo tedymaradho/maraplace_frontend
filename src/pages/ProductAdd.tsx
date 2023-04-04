@@ -1,8 +1,75 @@
-const AddProduct = () => {
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import { setMsgShow } from '../redux/msgSlice';
+
+const INITIAL_PRODUCT = {
+  idProduct: '',
+  productName: '',
+  merk: '',
+  size: '',
+  gender: '',
+  desc: '',
+  category: '',
+  price: 0,
+  stock: 0,
+  uomName: '',
+  image: '',
+  vendor: '',
+  status: '',
+};
+
+const ProductAdd = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [product, setProduct] = useState(INITIAL_PRODUCT);
+
+  const addHandler = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/products`,
+        {
+          id_product: product.idProduct,
+          product_name: product.productName,
+          merk: product.merk,
+          size: product.size,
+          gender: product.gender,
+          desc: product.desc,
+          category: product.category,
+          price: +product.price,
+          stock: +product.stock,
+          uom_name: product.uomName,
+          status: product.status,
+        }
+      );
+
+      if (res.data) {
+        dispatch(
+          setMsgShow({
+            title: 'Success',
+            content: 'Added new product success',
+            btnContent: 'Ok',
+          })
+        );
+
+        setProduct(INITIAL_PRODUCT);
+
+        navigate('/product/add');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="add-product">
       <h1 className="add-product--title">ADD NEW PRODUCT</h1>
-      <form className="add-product__form">
+      <form onSubmit={addHandler} className="add-product__form">
         <div className="add-product__form--left">
           <div className="add-product__form--group">
             <label className="add-product__form--label">Id Product</label>
@@ -11,6 +78,9 @@ const AddProduct = () => {
               type="text"
               name="id-product"
               placeholder="Enter Id Product"
+              onChange={(e) =>
+                setProduct({ ...product, idProduct: e.target.value })
+              }
             />
           </div>
           <div className="add-product__form--group">
@@ -20,6 +90,9 @@ const AddProduct = () => {
               type="text"
               name="product-name"
               placeholder="Enter Product Name"
+              onChange={(e) =>
+                setProduct({ ...product, productName: e.target.value })
+              }
             />
           </div>
           <div className="add-product__form--group">
@@ -29,6 +102,7 @@ const AddProduct = () => {
               type="text"
               name="merk"
               placeholder="Enter Merk"
+              onChange={(e) => setProduct({ ...product, merk: e.target.value })}
             />
           </div>
           <div className="add-product__form--group">
@@ -38,6 +112,7 @@ const AddProduct = () => {
               type="text"
               name="size"
               placeholder="Enter Size"
+              onChange={(e) => setProduct({ ...product, size: e.target.value })}
             />
           </div>
           <div className="add-product__form--group">
@@ -47,6 +122,9 @@ const AddProduct = () => {
               type="text"
               name="gender"
               placeholder="Enter Gender"
+              onChange={(e) =>
+                setProduct({ ...product, gender: e.target.value })
+              }
             />
           </div>
           <div className="add-product__form--group">
@@ -56,6 +134,7 @@ const AddProduct = () => {
               name="desc"
               placeholder="Enter Description"
               rows={12}
+              onChange={(e) => setProduct({ ...product, desc: e.target.value })}
             />
           </div>
         </div>
@@ -63,8 +142,17 @@ const AddProduct = () => {
         <div className="add-product__form--right">
           <div className="add-product__form--group">
             <label className="add-product__form--label">Category</label>
-            <select className="add-product__form--select" name="category">
-              <option>Category</option>
+            <select
+              className="add-product__form--select"
+              name="category"
+              onChange={(e) =>
+                setProduct({ ...product, category: e.target.value })
+              }
+            >
+              <option value="">Category</option>
+              <option value="hat">Hat</option>
+              <option value="bag">Bag</option>
+              <option value="slippers">Slippers</option>
             </select>
           </div>
           <div className="add-product__form--group">
@@ -74,6 +162,9 @@ const AddProduct = () => {
               type="number"
               name="price"
               placeholder="Enter Price"
+              onChange={(e) =>
+                setProduct({ ...product, price: +e.target.value })
+              }
             />
           </div>
           <div className="add-product__form--group">
@@ -83,22 +174,35 @@ const AddProduct = () => {
               type="number"
               name="stock"
               placeholder="Enter Stock"
+              onChange={(e) =>
+                setProduct({ ...product, stock: +e.target.value })
+              }
             />
           </div>
           <div className="add-product__form--group">
-            <label className="add-product__form--label">Unit Name</label>
+            <label className="add-product__form--label">UoM Name</label>
             <input
               className="add-product__form--input"
               type="text"
-              name="unit-name"
-              placeholder="Enter Unit Name"
+              name="uom-name"
+              placeholder="Enter UoM Name"
+              onChange={(e) =>
+                setProduct({ ...product, uomName: e.target.value })
+              }
             />
           </div>
           <div className="add-product__form--group">
-            <label className="add-product__form--label-file">Image Url</label>
+            <label className="add-product__form--label-file">Image</label>
             <div className="add-product__form--file">
-              <input type="file" multiple name="image-url" />
-              <p>You can choose multiple file</p>
+              <input
+                type="file"
+                multiple
+                name="image"
+                onChange={(e) =>
+                  setProduct({ ...product, image: e.target.value })
+                }
+              />
+              <p>You can select multiple image files</p>
             </div>
           </div>
           <div className="add-product__form--group">
@@ -108,24 +212,39 @@ const AddProduct = () => {
               type="text"
               name="vendor"
               placeholder="Enter Vendor"
+              onChange={(e) =>
+                setProduct({ ...product, vendor: e.target.value })
+              }
             />
           </div>
           <div className="add-product__form--group">
             <label className="add-product__form--label">Flag</label>
             <select className="add-product__form--select" name="flag">
               <option>Flag</option>
+              <option value="recommended">Recommended</option>
+              <option value="sold">Most Sold</option>
             </select>
           </div>
           <div className="add-product__form--group">
             <label className="add-product__form--label">Status</label>
-            <select className="add-product__form--select" name="status">
+            <select
+              className="add-product__form--select"
+              name="status"
+              onChange={(e) =>
+                setProduct({ ...product, status: e.target.value })
+              }
+            >
               <option>Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
             </select>
           </div>
           <br />
           <div className="add-product__form--group">
             <label></label>
-            <button className="btn btn--lg btn--primary">Add Product</button>
+            <button type="submit" className="btn btn--lg btn--primary">
+              Add Product
+            </button>
           </div>
         </div>
       </form>
@@ -133,4 +252,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default ProductAdd;
