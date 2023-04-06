@@ -2,8 +2,15 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from 'firebase/storage';
 
 import { setMsgShow } from '../redux/msgSlice';
+import app from '../firebase';
 
 const INITIAL_PRODUCT = {
   idProduct: '',
@@ -16,60 +23,129 @@ const INITIAL_PRODUCT = {
   price: 0,
   stock: 0,
   uomName: '',
-  image: '',
+  images: [] as File[],
   vendor: '',
   status: '',
 };
 
 const ProductAdd = () => {
+  const [product, setProduct] = useState(INITIAL_PRODUCT);
+  const [files, setFiles] = useState<FileList>();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const [product, setProduct] = useState(INITIAL_PRODUCT);
 
   const addHandler = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/products`,
-        {
-          id_product: product.idProduct,
-          product_name: product.productName,
-          merk: product.merk,
-          size: product.size,
-          gender: product.gender,
-          desc: product.desc,
-          category: product.category,
-          price: +product.price,
-          stock: +product.stock,
-          uom_name: product.uomName,
-          status: product.status,
-        }
-      );
+    const storage = getStorage(app);
 
-      if (res.data) {
-        dispatch(
-          setMsgShow({
-            title: 'Success',
-            content: 'Added new product success',
-            btnContent: 'Ok',
-          })
+    let resImages = [] as string[];
+
+    if (files) {
+      Array.from(files).map((file) => {
+        const fileName =
+          `${product.category}-${new Date().getTime()}-` + file.name;
+
+        const storageRef = ref(
+          storage,
+          `images/${product.category}/` + fileName
         );
 
-        setProduct(INITIAL_PRODUCT);
+        const uploadTask = uploadBytesResumable(storageRef, file);
 
-        navigate('/product/add');
-      }
-    } catch (error) {
-      console.error(error);
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+              case 'paused':
+                console.log('Upload is paused');
+                break;
+              case 'running':
+                console.log('Upload is running');
+                break;
+              default:
+            }
+          },
+          (error) => {
+            switch (error.code) {
+              case 'storage/unauthorized':
+                console.log(
+                  "User doesn't have permission to access the object"
+                );
+                break;
+              case 'storage/canceled':
+                console.log('User canceled the upload');
+                break;
+              case 'storage/unknown':
+                console.log(
+                  'Unknown error occurred, inspect error.serverResponse'
+                );
+                break;
+            }
+          },
+          () => {
+            // Upload completed successfully, now we can get the download URL
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resImages.push(downloadURL);
+
+              if (Array.from(files).length === resImages.length) {
+                console.log(resImages);
+              }
+            });
+          }
+        );
+      });
     }
+
+    // try {
+    //   const res = await axios.post(
+    //     `${import.meta.env.VITE_BACKEND_URL}/api/products`,
+    //     {
+    //       id_product: product.idProduct,
+    //       product_name: product.productName,
+    //       merk: product.merk,
+    //       size: product.size,
+    //       gender: product.gender,
+    //       desc: product.desc,
+    //       category: product.category,
+    //       price: +product.price,
+    //       stock: +product.stock,
+    //       uom_name: product.uomName,
+    //       images: product.images,
+    //       status: product.status,
+    //     }
+    //   );
+
+    //   if (res.data) {
+    //     dispatch(
+    //       setMsgShow({
+    //         title: 'Success',
+    //         content: 'Added new product success',
+    //         btnContent: 'Ok',
+    //       })
+    //     );
+
+    //     setProduct(INITIAL_PRODUCT);
+
+    //     navigate('/product/add');
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    // }
   };
 
   return (
     <div className="add-product">
       <h1 className="add-product--title">ADD NEW PRODUCT</h1>
-      <form onSubmit={addHandler} className="add-product__form">
+      <form
+        encType="multipart/form-data"
+        onSubmit={addHandler}
+        className="add-product__form"
+      >
         <div className="add-product__form--left">
           <div className="add-product__form--group">
             <label className="add-product__form--label">Id Product</label>
@@ -197,10 +273,9 @@ const ProductAdd = () => {
               <input
                 type="file"
                 multiple
-                name="image"
-                onChange={(e) =>
-                  setProduct({ ...product, image: e.target.value })
-                }
+                name="images"
+                accept=".jpg,.jpeg,.png,.webp"
+                onChange={(e) => e.target.files && setFiles(e.target.files)}
               />
               <p>You can select multiple image files</p>
             </div>

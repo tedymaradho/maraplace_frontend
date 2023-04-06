@@ -9,7 +9,7 @@ import { addToCart } from '../redux/cartSlice';
 interface IProps {
   product: {
     id_product: string;
-    image_url: string[];
+    images: string[];
     product_name: string;
     price: number;
     disc: number;
@@ -26,7 +26,7 @@ const ProductGrid: FC<IProps> = (props) => {
 
   const {
     id_product,
-    image_url,
+    images,
     product_name,
     price,
     disc,
@@ -61,7 +61,7 @@ const ProductGrid: FC<IProps> = (props) => {
           await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
             email: email,
             id_product,
-            image_url: image_url[0],
+            images: images[0],
             product_name,
             price,
             disc,
@@ -99,7 +99,7 @@ const ProductGrid: FC<IProps> = (props) => {
         className="product-grid__img--box"
       >
         <img
-          src={image_url[0]}
+          src={images[0]}
           alt={`Image of ${product_name}`}
           className="product-grid__img"
         />

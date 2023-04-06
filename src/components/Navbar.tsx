@@ -261,13 +261,14 @@ const Navbar = () => {
             </div>
           </div>
         </div>
+
         {cartDropdownOpen && (
           <div
             onMouseLeave={() => setCartDropdownOpen(false)}
             className="navbar__cart"
           >
             <div className="navbar__cart--dropdown">
-              {products ? (
+              {products.length > 0 ? (
                 products.map((item: any) => {
                   const { _id, image_url, product_name, sale_price, qty } =
                     item;
@@ -291,7 +292,7 @@ const Navbar = () => {
                 <p>Empty Items</p>
               )}
             </div>
-            {products && (
+            {products.length > 0 && (
               <Link
                 onClick={() => setCartDropdownOpen(false)}
                 to="/checkout"
@@ -309,9 +310,11 @@ const Navbar = () => {
             className="navbar__notif"
           >
             <div className="navbar__notif--dropdown">
-              <Link to="" className="navbar__notif--transaction">
-                My Transaction
-              </Link>
+              {email && (
+                <Link to="" className="navbar__notif--transaction">
+                  My Transaction
+                </Link>
+              )}
             </div>
           </div>
         )}
@@ -374,41 +377,51 @@ const Navbar = () => {
             className="navbar__setting"
           >
             <div className="navbar__setting--dropdown">
-              <Link
-                onClick={() => setSettingDropdownOpen(false)}
-                to="/product/list"
-                className="navbar__setting--item"
-              >
-                <p>Manage Products</p>
-              </Link>
-              <Link
-                onClick={() => setSettingDropdownOpen(false)}
-                to="/product/add"
-                className="navbar__setting--item"
-              >
-                <p>Add Product</p>
-              </Link>
-              <Link
-                onClick={() => setSettingDropdownOpen(false)}
-                to=""
-                className="navbar__setting--item"
-              >
-                <p>Stock</p>
-              </Link>
-              <Link
-                onClick={() => setSettingDropdownOpen(false)}
-                to=""
-                className="navbar__setting--item"
-              >
-                <p>Discount</p>
-              </Link>
-              <Link
-                onClick={() => setSettingDropdownOpen(false)}
-                to="/settings"
-                className="navbar__setting--item"
-              >
-                <p>Settings</p>
-              </Link>
+              {email && (
+                <Link
+                  onClick={() => setSettingDropdownOpen(false)}
+                  to="/product/list"
+                  className="navbar__setting--item"
+                >
+                  <p>Manage Products</p>
+                </Link>
+              )}
+              {email && (
+                <Link
+                  onClick={() => setSettingDropdownOpen(false)}
+                  to="/product/add"
+                  className="navbar__setting--item"
+                >
+                  <p>Add Product</p>
+                </Link>
+              )}
+              {email && (
+                <Link
+                  onClick={() => setSettingDropdownOpen(false)}
+                  to=""
+                  className="navbar__setting--item"
+                >
+                  <p>Stock</p>
+                </Link>
+              )}
+              {email && (
+                <Link
+                  onClick={() => setSettingDropdownOpen(false)}
+                  to=""
+                  className="navbar__setting--item"
+                >
+                  <p>Discount</p>
+                </Link>
+              )}
+              {email && (
+                <Link
+                  onClick={() => setSettingDropdownOpen(false)}
+                  to="/settings"
+                  className="navbar__setting--item"
+                >
+                  <p>Settings</p>
+                </Link>
+              )}
             </div>
           </div>
         )}
