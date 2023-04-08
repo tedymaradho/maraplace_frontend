@@ -18,7 +18,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import Footer from './Footer';
 import { addToCart } from '../redux/cartSlice';
 import { setCurrentUser } from '../redux/userSlice';
-import Modal from './Modal';
 
 const Navbar = () => {
   const [categoryMany, setCategoryMany] = useState<string[]>([]);
@@ -30,9 +29,6 @@ const Navbar = () => {
     useState<boolean>(false);
   const { products, quantity } = useSelector((state: any) => state.cart);
   const { email } = useSelector((state: any) => state.currentUser);
-  const { msgShow, msgTitle, msgContent, msgBtnContent } = useSelector(
-    (state: any) => state.msg
-  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -125,13 +121,6 @@ const Navbar = () => {
 
   return (
     <>
-      {msgShow && (
-        <Modal
-          title={msgTitle}
-          content={msgContent}
-          btnContent={msgBtnContent}
-        />
-      )}
       <div className="navbar__container">
         <div className="navbar">
           <Link to="/" className="navbar__logo--box">

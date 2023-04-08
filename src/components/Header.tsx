@@ -76,39 +76,39 @@ const Header = () => {
           <FaFemale className="icon__female" />
           Female
         </Link>
-        <Link to="Category=dress" className="header__category--label">
+        <Link to="category=dress" className="header__category--label">
           <GiLargeDress className="icon__dress" />
           Dress
         </Link>
-        <Link to="Category=shirt" className="header__category--label">
+        <Link to="category=shirt" className="header__category--label">
           <FaTshirt className="icon__shirt" />
           Shirt
         </Link>
-        <Link to="Category=pants" className="header__category--label">
+        <Link to="category=pants" className="header__category--label">
           <GiArmoredPants className="icon__pants" />
           Long pants
         </Link>
-        <Link to="Category=shorts" className="header__category--label">
+        <Link to="category=shorts" className="header__category--label">
           <GiUnderwearShorts className="icon__shorts" />
           Shorts
         </Link>
-        <Link to="Category=bag" className="header__category--label">
+        <Link to="category=bag" className="header__category--label">
           <BsFillHandbagFill className="icon__bag" />
           Bag
         </Link>
-        <Link to="Category=hat" className="header__category--label">
+        <Link to="category=hat" className="header__category--label">
           <FaRedhat className="icon__hat" />
           Hat
         </Link>
-        <Link to="Category=jacket" className="header__category--label">
+        <Link to="category=jacket" className="header__category--label">
           <GiMonclerJacket className="icon__jacket" />
           Jacket
         </Link>
-        <Link to="Category=shoes" className="header__category--label">
+        <Link to="category=shoes" className="header__category--label">
           <GiSonicShoes className="icon__shoes" />
           Shoes
         </Link>
-        <Link to="Category=slippers" className="header__category--label">
+        <Link to="category=slippers" className="header__category--label">
           <GiSlippers className="icon__slippers" />
           Slippers
         </Link>

@@ -76,9 +76,17 @@
       height: 3.5rem;
       padding: 0 0.5rem;
       border: 1px solid lightgray;
-      color: gray;
       border-radius: 6px;
       cursor: pointer;
+      color: gray;
+
+      & > * {
+        color: #333;
+
+        &:first-child {
+          color: gray;
+        }
+      }
     }
 
     &--file {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   getStorage,
@@ -9,8 +9,10 @@ import {
   getDownloadURL,
 } from 'firebase/storage';
 
-import { setMsgShow } from '../redux/msgSlice';
+import { setLoading, setSuccess, setError, setHidden } from '../redux/msgSlice';
 import app from '../firebase';
+import Modal from '../components/Modal';
+import Loading from '../components/Loading';
 
 const INITIAL_PRODUCT = {
   idProduct: '',
@@ -31,6 +33,10 @@ const INITIAL_PRODUCT = {
 const ProductAdd = () => {
   const [product, setProduct] = useState(INITIAL_PRODUCT);
   const [files, setFiles] = useState<FileList>();
+  const [resetSelect, setResetSelect] = useState<boolean>(false);
+  const { isLoading, isSuccess, isError } = useSelector(
+    (state: any) => state.msg
+  );
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,6 +47,8 @@ const ProductAdd = () => {
     const storage = getStorage(app);
 
     let resImages = [] as string[];
+
+    dispatch(setLoading());
 
     if (files) {
       Array.from(files).map((file) => {
@@ -88,242 +96,255 @@ const ProductAdd = () => {
             }
           },
           () => {
-            // Upload completed successfully, now we can get the download URL
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               resImages.push(downloadURL);
 
               if (Array.from(files).length === resImages.length) {
-                console.log(resImages);
+                axios
+                  .post(`${import.meta.env.VITE_BACKEND_URL}/api/products`, {
+                    id_product: product.idProduct,
+                    product_name: product.productName,
+                    merk: product.merk,
+                    size: product.size,
+                    gender: product.gender,
+                    desc: product.desc,
+                    category: product.category,
+                    price: +product.price,
+                    sale_price: +product.price,
+                    stock: +product.stock,
+                    uom_name: product.uomName,
+                    images: resImages,
+                    status: product.status,
+                  })
+                  .then(() => {
+                    dispatch(setSuccess());
+
+                    setProduct(INITIAL_PRODUCT);
+                    setResetSelect(true);
+
+                    navigate('/product/add');
+                  })
+                  .catch((error) => console.log(error));
               }
             });
           }
         );
       });
     }
-
-    // try {
-    //   const res = await axios.post(
-    //     `${import.meta.env.VITE_BACKEND_URL}/api/products`,
-    //     {
-    //       id_product: product.idProduct,
-    //       product_name: product.productName,
-    //       merk: product.merk,
-    //       size: product.size,
-    //       gender: product.gender,
-    //       desc: product.desc,
-    //       category: product.category,
-    //       price: +product.price,
-    //       stock: +product.stock,
-    //       uom_name: product.uomName,
-    //       images: product.images,
-    //       status: product.status,
-    //     }
-    //   );
-
-    //   if (res.data) {
-    //     dispatch(
-    //       setMsgShow({
-    //         title: 'Success',
-    //         content: 'Added new product success',
-    //         btnContent: 'Ok',
-    //       })
-    //     );
-
-    //     setProduct(INITIAL_PRODUCT);
-
-    //     navigate('/product/add');
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    // }
   };
 
   return (
-    <div className="add-product">
-      <h1 className="add-product--title">ADD NEW PRODUCT</h1>
-      <form
-        encType="multipart/form-data"
-        onSubmit={addHandler}
-        className="add-product__form"
-      >
-        <div className="add-product__form--left">
-          <div className="add-product__form--group">
-            <label className="add-product__form--label">Id Product</label>
-            <input
-              className="add-product__form--input"
-              type="text"
-              name="id-product"
-              placeholder="Enter Id Product"
-              onChange={(e) =>
-                setProduct({ ...product, idProduct: e.target.value })
-              }
-            />
-          </div>
-          <div className="add-product__form--group">
-            <label className="add-product__form--label">Product Name</label>
-            <input
-              className="add-product__form--input"
-              type="text"
-              name="product-name"
-              placeholder="Enter Product Name"
-              onChange={(e) =>
-                setProduct({ ...product, productName: e.target.value })
-              }
-            />
-          </div>
-          <div className="add-product__form--group">
-            <label className="add-product__form--label">Merk</label>
-            <input
-              className="add-product__form--input"
-              type="text"
-              name="merk"
-              placeholder="Enter Merk"
-              onChange={(e) => setProduct({ ...product, merk: e.target.value })}
-            />
-          </div>
-          <div className="add-product__form--group">
-            <label className="add-product__form--label">Size</label>
-            <input
-              className="add-product__form--input"
-              type="text"
-              name="size"
-              placeholder="Enter Size"
-              onChange={(e) => setProduct({ ...product, size: e.target.value })}
-            />
-          </div>
-          <div className="add-product__form--group">
-            <label className="add-product__form--label">Gender</label>
-            <input
-              className="add-product__form--input"
-              type="text"
-              name="gender"
-              placeholder="Enter Gender"
-              onChange={(e) =>
-                setProduct({ ...product, gender: e.target.value })
-              }
-            />
-          </div>
-          <div className="add-product__form--group">
-            <label className="add-product__form--label">Description</label>
-            <textarea
-              className="add-product__form--textarea"
-              name="desc"
-              placeholder="Enter Description"
-              rows={12}
-              onChange={(e) => setProduct({ ...product, desc: e.target.value })}
-            />
-          </div>
-        </div>
-
-        <div className="add-product__form--right">
-          <div className="add-product__form--group">
-            <label className="add-product__form--label">Category</label>
-            <select
-              className="add-product__form--select"
-              name="category"
-              onChange={(e) =>
-                setProduct({ ...product, category: e.target.value })
-              }
-            >
-              <option value="">Category</option>
-              <option value="hat">Hat</option>
-              <option value="bag">Bag</option>
-              <option value="slippers">Slippers</option>
-            </select>
-          </div>
-          <div className="add-product__form--group">
-            <label className="add-product__form--label">Price</label>
-            <input
-              className="add-product__form--input"
-              type="number"
-              name="price"
-              placeholder="Enter Price"
-              onChange={(e) =>
-                setProduct({ ...product, price: +e.target.value })
-              }
-            />
-          </div>
-          <div className="add-product__form--group">
-            <label className="add-product__form--label">Stock</label>
-            <input
-              className="add-product__form--input"
-              type="number"
-              name="stock"
-              placeholder="Enter Stock"
-              onChange={(e) =>
-                setProduct({ ...product, stock: +e.target.value })
-              }
-            />
-          </div>
-          <div className="add-product__form--group">
-            <label className="add-product__form--label">UoM Name</label>
-            <input
-              className="add-product__form--input"
-              type="text"
-              name="uom-name"
-              placeholder="Enter UoM Name"
-              onChange={(e) =>
-                setProduct({ ...product, uomName: e.target.value })
-              }
-            />
-          </div>
-          <div className="add-product__form--group">
-            <label className="add-product__form--label-file">Image</label>
-            <div className="add-product__form--file">
+    <>
+      {isLoading && <Loading />}
+      {isSuccess && (
+        <Modal
+          title="Success"
+          content="Added new product success"
+          btnContent="Ok"
+        />
+      )}
+      <div className="add-product">
+        <h1 className="add-product--title">ADD NEW PRODUCT</h1>
+        <form
+          encType="multipart/form-data"
+          onSubmit={addHandler}
+          className="add-product__form"
+        >
+          <div className="add-product__form--left">
+            <div className="add-product__form--group">
+              <label className="add-product__form--label">Id Product</label>
               <input
-                type="file"
-                multiple
-                name="images"
-                accept=".jpg,.jpeg,.png,.webp"
-                onChange={(e) => e.target.files && setFiles(e.target.files)}
+                className="add-product__form--input"
+                type="text"
+                name="id-product"
+                placeholder="Enter Id Product"
+                value={product.idProduct}
+                onChange={(e) =>
+                  setProduct({ ...product, idProduct: e.target.value })
+                }
               />
-              <p>You can select multiple image files</p>
+            </div>
+            <div className="add-product__form--group">
+              <label className="add-product__form--label">Product Name</label>
+              <input
+                className="add-product__form--input"
+                type="text"
+                name="product-name"
+                placeholder="Enter Product Name"
+                value={product.productName}
+                onChange={(e) =>
+                  setProduct({ ...product, productName: e.target.value })
+                }
+              />
+            </div>
+            <div className="add-product__form--group">
+              <label className="add-product__form--label">Merk</label>
+              <input
+                className="add-product__form--input"
+                type="text"
+                name="merk"
+                placeholder="Enter Merk"
+                value={product.merk}
+                onChange={(e) =>
+                  setProduct({ ...product, merk: e.target.value })
+                }
+              />
+            </div>
+            <div className="add-product__form--group">
+              <label className="add-product__form--label">Size</label>
+              <input
+                className="add-product__form--input"
+                type="text"
+                name="size"
+                placeholder="Enter Size"
+                value={product.size}
+                onChange={(e) =>
+                  setProduct({ ...product, size: e.target.value })
+                }
+              />
+            </div>
+            <div className="add-product__form--group">
+              <label className="add-product__form--label">Gender</label>
+              <input
+                className="add-product__form--input"
+                type="text"
+                name="gender"
+                placeholder="Enter Gender"
+                value={product.gender}
+                onChange={(e) =>
+                  setProduct({ ...product, gender: e.target.value })
+                }
+              />
+            </div>
+            <div className="add-product__form--group">
+              <label className="add-product__form--label">Description</label>
+              <textarea
+                className="add-product__form--textarea"
+                name="desc"
+                placeholder="Enter Description"
+                rows={12}
+                value={product.desc}
+                onChange={(e) =>
+                  setProduct({ ...product, desc: e.target.value })
+                }
+              />
             </div>
           </div>
-          <div className="add-product__form--group">
-            <label className="add-product__form--label">Vendor</label>
-            <input
-              className="add-product__form--input"
-              type="text"
-              name="vendor"
-              placeholder="Enter Vendor"
-              onChange={(e) =>
-                setProduct({ ...product, vendor: e.target.value })
-              }
-            />
+
+          <div className="add-product__form--right">
+            <div className="add-product__form--group">
+              <label className="add-product__form--label">Category</label>
+              <select
+                className="add-product__form--select"
+                name="category"
+                onChange={(e) =>
+                  setProduct({ ...product, category: e.target.value })
+                }
+              >
+                <option>Category</option>
+                <option value="hat">Hat</option>
+                <option value="bag">Bag</option>
+                <option value="slippers">Slippers</option>
+              </select>
+            </div>
+            <div className="add-product__form--group">
+              <label className="add-product__form--label">Price</label>
+              <input
+                className="add-product__form--input"
+                type="number"
+                name="price"
+                placeholder="Enter Price"
+                value={product.price}
+                onChange={(e) =>
+                  setProduct({ ...product, price: +e.target.value })
+                }
+              />
+            </div>
+            <div className="add-product__form--group">
+              <label className="add-product__form--label">Stock</label>
+              <input
+                className="add-product__form--input"
+                type="number"
+                name="stock"
+                placeholder="Enter Stock"
+                value={product.stock}
+                onChange={(e) =>
+                  setProduct({ ...product, stock: +e.target.value })
+                }
+              />
+            </div>
+            <div className="add-product__form--group">
+              <label className="add-product__form--label">UoM Name</label>
+              <input
+                className="add-product__form--input"
+                type="text"
+                name="uom-name"
+                placeholder="Enter UoM Name"
+                value={product.uomName}
+                onChange={(e) =>
+                  setProduct({ ...product, uomName: e.target.value })
+                }
+              />
+            </div>
+            <div className="add-product__form--group">
+              <label className="add-product__form--label-file">Image</label>
+              <div className="add-product__form--file">
+                <input
+                  type="file"
+                  multiple
+                  name="images"
+                  accept=".jpg,.jpeg,.png,.webp"
+                  onChange={(e) => e.target.files && setFiles(e.target.files)}
+                />
+                <p>You can select multiple image files</p>
+              </div>
+            </div>
+            <div className="add-product__form--group">
+              <label className="add-product__form--label">Vendor</label>
+              <input
+                className="add-product__form--input"
+                type="text"
+                name="vendor"
+                placeholder="Enter Vendor"
+                value={product.vendor}
+                onChange={(e) =>
+                  setProduct({ ...product, vendor: e.target.value })
+                }
+              />
+            </div>
+            <div className="add-product__form--group">
+              <label className="add-product__form--label">Flag</label>
+              <select className="add-product__form--select" name="flag">
+                <option>Flag</option>
+                <option value="recommended">Recommended</option>
+                <option value="sold">Most Sold</option>
+              </select>
+            </div>
+            <div className="add-product__form--group">
+              <label className="add-product__form--label">Status</label>
+              <select
+                className="add-product__form--select"
+                name="status"
+                onChange={(e) =>
+                  setProduct({ ...product, status: e.target.value })
+                }
+              >
+                <option>Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <br />
+            <div className="add-product__form--group">
+              <label></label>
+              <button type="submit" className="btn btn--lg btn--primary">
+                Add Product
+              </button>
+            </div>
           </div>
-          <div className="add-product__form--group">
-            <label className="add-product__form--label">Flag</label>
-            <select className="add-product__form--select" name="flag">
-              <option>Flag</option>
-              <option value="recommended">Recommended</option>
-              <option value="sold">Most Sold</option>
-            </select>
-          </div>
-          <div className="add-product__form--group">
-            <label className="add-product__form--label">Status</label>
-            <select
-              className="add-product__form--select"
-              name="status"
-              onChange={(e) =>
-                setProduct({ ...product, status: e.target.value })
-              }
-            >
-              <option>Status</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-          </div>
-          <br />
-          <div className="add-product__form--group">
-            <label></label>
-            <button type="submit" className="btn btn--lg btn--primary">
-              Add Product
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </>
   );
 };
 

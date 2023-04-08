@@ -3,27 +3,29 @@ import { createSlice } from '@reduxjs/toolkit';
 const msgSlice = createSlice({
   name: 'msg',
   initialState: {
-    msgShow: false,
-    msgTitle: '',
-    msgContent: '',
-    msgBtnContent: '',
+    isLoading: false,
+    isSuccess: false,
+    isError: false,
   },
   reducers: {
-    setMsgShow: (state, action) => {
-      state.msgShow = true;
-      state.msgTitle = action.payload.title;
-      state.msgContent = action.payload.content;
-      state.msgBtnContent = action.payload.btnContent;
+    setLoading: (state) => {
+      state.isLoading = true;
     },
-    setMsgHide: (state) => {
-      state.msgShow = false;
-      state.msgTitle = '';
-      state.msgContent = '';
-      state.msgBtnContent = '';
+    setSuccess: (state) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+    },
+    setError: (state) => {
+      state.isLoading = false;
+      state.isError = true;
+    },
+    setHidden: (state) => {
+      state.isSuccess = false;
+      state.isError = false;
     },
   },
 });
 
-export const { setMsgShow, setMsgHide } = msgSlice.actions;
+export const { setLoading, setSuccess, setError, setHidden } = msgSlice.actions;
 
 export default msgSlice.reducer;

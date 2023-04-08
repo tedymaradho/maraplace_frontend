@@ -1,13 +1,13 @@
 import { AiOutlineClose } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
-import { setMsgHide } from '../redux/msgSlice';
+import { setHidden } from '../redux/msgSlice';
 
 const Modal = (props: any) => {
   const { title, content, btnContent } = props;
 
   const dispatch = useDispatch();
 
-  const closeHandler = () => dispatch(setMsgHide());
+  const closeHandler = () => dispatch(setHidden());
 
   return (
     <>

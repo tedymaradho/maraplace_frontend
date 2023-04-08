@@ -17,7 +17,7 @@ interface IProduct {
   disc: number;
   sale_price: number;
   stock: number;
-  image_url: string[];
+  images: string[];
   sold: number;
   flag: string;
 }
@@ -33,7 +33,7 @@ const INITIAL_PRODUCT = {
   disc: 0,
   sale_price: 0,
   stock: 0,
-  image_url: [],
+  images: [],
   sold: 0,
   flag: '',
 };
@@ -60,7 +60,7 @@ const ProductDetails = () => {
     disc,
     sale_price,
     stock,
-    image_url,
+    images,
     sold,
     flag,
   } = product;
@@ -102,7 +102,7 @@ const ProductDetails = () => {
         await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
           email: email,
           id_product,
-          image_url: image_url[0],
+          images: images[0],
           product_name,
           price,
           disc,
@@ -136,12 +136,12 @@ const ProductDetails = () => {
           <div className="details-product--left">
             <img
               className="details-product__img"
-              src={image_url[imageIndex]}
+              src={images[imageIndex]}
               alt={`Image of ${product_name}`}
             />
             <div className="details-product__img--slider-box">
-              {image_url &&
-                [...image_url].map((ImgUrl, idx) => {
+              {images.length > 0 &&
+                [...images].map((ImgUrl, idx) => {
                   return (
                     <button
                       className="details-product__img--link"
@@ -178,7 +178,7 @@ const ProductDetails = () => {
             ) : (
               <p className="heading heading__primary">
                 Rp.&nbsp;
-                {Intl.NumberFormat('en-US').format(price)}
+                {Intl.NumberFormat('en-US').format(sale_price)}
               </p>
             )}
             <p className="details-product--item">Merk: {merk}</p>

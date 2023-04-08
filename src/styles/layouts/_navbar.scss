@@ -230,6 +230,10 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+
+      &:hover {
+        color: #000;
+      }
     }
 
     @include respond(phone) {
