@@ -21,7 +21,9 @@ const Modal = (props: any) => {
           />
         </div>
         <div className="modal__main">
-          <p className="modal__content">{content}</p>
+          <p className={`modal__content ${title === 'fail' && 'modal__error'}`}>
+            {content}
+          </p>
         </div>
         <div className="modal__footer">
           <button className="modal__button" onClick={closeHandler}>

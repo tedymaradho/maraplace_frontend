@@ -155,6 +155,7 @@ const Navbar = () => {
 
                 return selected.join(',');
               }}
+              MenuProps={{ disableScrollLock: true }}
               sx={{ fontSize: '1.5rem', color: 'gray' }}
             >
               {options.map((opt) => (
@@ -173,12 +174,14 @@ const Navbar = () => {
           <div className="navbar__link">
             <Link
               onClick={() => {
+                setSearchText('');
+                setCategoryMany([]);
+              }}
+              onMouseEnter={() => {
                 setCartDropdownOpen(false);
                 setNotifDropdownOpen(false);
                 setAvatarDropdownOpen(false);
                 setSettingDropdownOpen(false);
-                setSearchText('');
-                setCategoryMany([]);
               }}
               to="/"
               className="navbar__link--box"
@@ -369,28 +372,28 @@ const Navbar = () => {
               {email && (
                 <Link
                   onClick={() => setSettingDropdownOpen(false)}
-                  to="/product/list"
+                  to="/products"
                   className="navbar__setting--item"
                 >
-                  <p>Manage Products</p>
+                  <p>Products</p>
                 </Link>
               )}
               {email && (
                 <Link
                   onClick={() => setSettingDropdownOpen(false)}
-                  to="/product/add"
+                  to="/category/list"
                   className="navbar__setting--item"
                 >
-                  <p>Add Product</p>
+                  <p>Categories</p>
                 </Link>
               )}
               {email && (
                 <Link
                   onClick={() => setSettingDropdownOpen(false)}
-                  to=""
+                  to="/vendor/list"
                   className="navbar__setting--item"
                 >
-                  <p>Stock</p>
+                  <p>Vendors</p>
                 </Link>
               )}
               {email && (

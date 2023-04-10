@@ -69,4 +69,8 @@
       background-color: $color-primary-dark;
     }
   }
+
+  &__error {
+    color: red;
+  }
 }

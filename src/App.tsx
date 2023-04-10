@@ -10,6 +10,7 @@ import Setting from './pages/Setting';
 import ProductList from './pages/ProductList';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import ProductEdit from './pages/ProductEdit';
 
 import './styles/main.scss';
 
@@ -24,8 +25,9 @@ function App() {
           <Route path=":category" element={<ProductCategory />} />
           <Route path=":category/:idproduct" element={<ProductDetails />} />
           <Route path="checkout" element={<Checkout />} />
-          <Route path="product/list" element={<ProductList />} />
+          <Route path="products" element={<ProductList />} />
           <Route path="product/add" element={<ProductAdd />} />
+          <Route path="product/edit/:idproduct" element={<ProductEdit />} />
           <Route path="settings" element={<Setting />} />
         </Route>
       </Routes>
